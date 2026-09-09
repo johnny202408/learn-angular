@@ -19,10 +19,17 @@ import yaml
 from weasyprint import CSS, HTML
 
 ROOT = Path(__file__).parent
-CONTENT_DIR = ROOT / "content"
 BUILD_DIR = ROOT / "build"
-STYLE = ROOT / "style.css"
 METADATA = ROOT / "metadata.yaml"
+
+
+def content_dir_for(lang: str) -> Path:
+    return ROOT / "content" if lang == "en" else ROOT / f"content-{lang}"
+
+
+def style_for(lang: str) -> Path:
+    candidate = ROOT / f"style-{lang}.css"
+    return candidate if lang != "en" and candidate.exists() else ROOT / "style.css"
 
 MD_EXTENSIONS = [
     "fenced_code",
@@ -54,12 +61,13 @@ def render_chapter(path: Path) -> str:
     return f'<section class="chapter" data-source="{path.name}">\n{body}\n</section>\n'
 
 
-def assemble_html(chapter_paths: list[Path], meta: dict) -> str:
+def assemble_html(chapter_paths: list[Path], meta: dict, lang: str) -> str:
     parts = [render_chapter(p) for p in chapter_paths]
     body = "\n".join(parts)
     title = meta.get("title", "Untitled")
+    dir_attr = "rtl" if lang == "he" else "ltr"
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}" dir="{dir_attr}">
 <head>
 <meta charset="utf-8">
 <title>{title}</title>
@@ -71,10 +79,10 @@ def assemble_html(chapter_paths: list[Path], meta: dict) -> str:
 """
 
 
-def select_chapters(chapter_filter: str | None) -> list[Path]:
-    all_chapters = sorted(CONTENT_DIR.glob("*.md"))
+def select_chapters(content_dir: Path, chapter_filter: str | None) -> list[Path]:
+    all_chapters = sorted(content_dir.glob("*.md"))
     if not all_chapters:
-        sys.exit(f"No chapters found in {CONTENT_DIR}")
+        sys.exit(f"No chapters found in {content_dir}")
     if chapter_filter is None:
         return all_chapters
     matched = [p for p in all_chapters if re.match(rf"^{chapter_filter}[_\.]", p.name)]
@@ -87,19 +95,26 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--html", action="store_true", help="Also emit HTML for previewing")
     parser.add_argument("--chapter", help="Build only chapters starting with this prefix (e.g. 01)")
+    parser.add_argument("--lang", default="en", help="Language variant: 'en' (default) or 'he' (Hebrew pilot)")
     args = parser.parse_args()
 
     BUILD_DIR.mkdir(exist_ok=True)
     meta = load_metadata()
-    chapters = select_chapters(args.chapter)
+    content_dir = content_dir_for(args.lang)
+    style_path = style_for(args.lang)
+    chapters = select_chapters(content_dir, args.chapter)
 
-    html_str = assemble_html(chapters, meta)
-    stem = "learn_angular" if args.chapter is None else f"learn_angular_ch{args.chapter}"
+    html_str = assemble_html(chapters, meta, args.lang)
+    stem = "learn_angular"
+    if args.lang != "en":
+        stem += f"_{args.lang}"
+    if args.chapter is not None:
+        stem += f"_ch{args.chapter}"
 
     if args.html:
         (BUILD_DIR / f"{stem}.html").write_text(html_str, encoding="utf-8")
 
-    css = CSS(filename=str(STYLE)) if STYLE.exists() else None
+    css = CSS(filename=str(style_path)) if style_path.exists() else None
     stylesheets = [css] if css else []
     HTML(string=html_str, base_url=str(ROOT)).write_pdf(
         target=str(BUILD_DIR / f"{stem}.pdf"),

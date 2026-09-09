@@ -1,0 +1,182 @@
+/* ---------- Page setup ---------- */
+@page {
+  size: A5;
+  margin: 22mm 20mm 24mm 20mm;
+  @bottom-center {
+    content: counter(page);
+    font-family: "Frank Ruhl Libre", "David CLM", "David", serif;
+    font-size: 9pt;
+    color: #666;
+  }
+  @top-left {
+    content: string(chapter-title);
+    font-family: "Frank Ruhl Libre", "David CLM", "David", serif;
+    font-size: 9pt;
+    color: #888;
+    font-style: italic;
+    direction: rtl;
+  }
+}
+
+@page :first {
+  @top-left { content: none; }
+  @bottom-center { content: none; }
+}
+
+/* ---------- Typography ---------- */
+html {
+  direction: rtl;
+  font-family: "Frank Ruhl Libre", "David CLM", "Rubik", "David", "Times New Roman", serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+body {
+  text-align: right;
+}
+
+p {
+  margin: 0 0 0.7em 0;
+  text-align: justify;
+}
+
+p + p { text-indent: 1.2em; }
+h1 + p, h2 + p, h3 + p, blockquote + p, pre + p, ul + p, ol + p, table + p { text-indent: 0; }
+
+/* ---------- Chapters ---------- */
+section.chapter {
+  page-break-before: always;
+}
+
+section.chapter:first-of-type {
+  page-break-before: avoid;
+}
+
+h1 {
+  string-set: chapter-title content();
+  font-size: 22pt;
+  font-weight: 700;
+  margin: 0 0 1.2em 0;
+  line-height: 1.25;
+  page-break-after: avoid;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 0.3em;
+}
+
+h2 {
+  font-size: 15pt;
+  font-weight: 700;
+  margin: 1.6em 0 0.5em 0;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 12pt;
+  font-weight: 700;
+  margin: 1.3em 0 0.3em 0;
+  page-break-after: avoid;
+}
+
+h4 {
+  font-size: 11pt;
+  font-weight: 700;
+  font-style: italic;
+  margin: 1em 0 0.2em 0;
+  page-break-after: avoid;
+}
+
+/* ---------- Inline code and code blocks: LTR ---------- */
+code {
+  font-family: "JetBrains Mono", "Menlo", "Consolas", monospace;
+  font-size: 9pt;
+  background: #f2f2f2;
+  padding: 1px 4px;
+  border-radius: 3px;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+pre {
+  font-family: "JetBrains Mono", "Menlo", "Consolas", monospace;
+  font-size: 8.8pt;
+  line-height: 1.4;
+  background: #f7f7f7;
+  border-right: 3px solid #7a3fbf;
+  padding: 10px 12px;
+  margin: 0.8em 0;
+  overflow-x: auto;
+  page-break-inside: avoid;
+  border-radius: 4px 0 0 4px;
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: embed;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.highlight .k, .highlight .kd, .highlight .kn { color: #7a3fbf; font-weight: 600; }
+.highlight .s, .highlight .s1, .highlight .s2 { color: #067d17; }
+.highlight .c, .highlight .c1, .highlight .cm { color: #808080; font-style: italic; }
+.highlight .nf, .highlight .nc { color: #0033b3; }
+.highlight .mi, .highlight .mf { color: #1750eb; }
+.highlight .o { color: #4b4b4b; }
+
+/* ---------- Callouts ---------- */
+blockquote {
+  border-right: 3px solid #f5a623;
+  background: #fff8ec;
+  padding: 8px 14px;
+  margin: 1em 0;
+  page-break-inside: avoid;
+}
+
+blockquote p { margin: 0.3em 0; text-align: right; text-indent: 0; }
+
+/* ---------- Lists, tables ---------- */
+ul, ol { margin: 0.4em 1.4em 0.9em 0; }
+li { margin: 0.2em 0; }
+
+table {
+  border-collapse: collapse;
+  margin: 1em 0;
+  width: 100%;
+  font-size: 10pt;
+  page-break-inside: avoid;
+  direction: rtl;
+}
+
+th, td {
+  border-bottom: 1px solid #ccc;
+  padding: 6px 8px;
+  text-align: right;
+  vertical-align: top;
+}
+
+th {
+  background: #f2f2f2;
+  border-bottom: 2px solid #666;
+  font-weight: 700;
+}
+
+/* ---------- Front matter ---------- */
+section.chapter[data-source="00_frontmatter.md"] h1 {
+  border-bottom: none;
+  font-size: 30pt;
+  text-align: center;
+  margin-top: 4em;
+}
+
+section.chapter[data-source="00_frontmatter.md"] h2 {
+  text-align: center;
+  border-bottom: none;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14pt;
+  color: #555;
+  margin: 0 0 6em 0;
+}
