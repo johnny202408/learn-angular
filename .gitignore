@@ -1,0 +1,20 @@
+# Explicitly excluded per project owner request
+learn_react.pdf
+
+# Python build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# HTML preview (regenerated with `python3 build.py --html`)
+build/*.html
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
