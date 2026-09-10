@@ -285,7 +285,7 @@ export const authGuardInterceptor: HttpInterceptorFn = (req, next) => {
 };
 ```
 
-נשתמש ב-interceptors יותר בחלק חמישי; לעת עתה, דע שהם קיימים והם הפטיש הנכון ל"כל בקשה צריכה X".
+נשתמש ב-interceptors יותר בהחלק החמישי; לעת עתה, דע שהם קיימים והם הפטיש הנכון ל"כל בקשה צריכה X".
 
 ## `httpResource`: ה-fetch המשולב-סיגנל המודרני
 

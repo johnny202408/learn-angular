@@ -18,7 +18,7 @@
 
 ## הדקורטור `@Component`, שדה אחרי שדה
 
-פתח את `src/app/app.ts` (או `app.component.ts`; שם הקובץ תלוי בגרסת ה-CLI, ואת ברירות המחדל של ה-CLI השתנו). הוא נראה בערך כך:
+פתח את `src/app/app.ts` (או `app.component.ts`; שם הקובץ תלוי בגרסת ה-CLI, וברירות המחדל של ה-CLI השתנו). הוא נראה בערך כך:
 
 ```ts
 import { Component, signal } from '@angular/core';
