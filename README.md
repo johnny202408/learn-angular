@@ -139,9 +139,11 @@ Compass is deliberately small enough to hold in your head and rich enough to jus
 
 **Appendix A — Setting up your machine.** Platform-specific installation notes for macOS, Windows, and Linux. Recommended VS Code extensions. A troubleshooting section that covers PATH issues, `EACCES` errors, corporate proxies, port conflicts, and file-watcher failures.
 
-**Appendix B — Debugging Angular apps.** The three questions to ask before touching any code. A guided tour of browser DevTools and Angular DevTools. Reading Angular error codes (`NG0100`, `NG0201`, `NG0304`, …) and TypeScript error messages. Common gotchas — missing `()` on signals, cold-Observable double-fetch, stale route params, CORS problems. When and how to ask for help productively.
+**Appendix B — Debugging Angular apps.** The three questions to ask before touching any code. A guided tour of browser DevTools and Angular DevTools. Reading Angular error codes (`NG0100`, `NG0201`, `NG0950`, …) and TypeScript error messages. Common gotchas — missing `()` on signals, cold-Observable double-fetch, stale route params, CORS problems. When and how to ask for help productively.
 
 **Appendix C — Legacy Angular idioms you'll still meet.** Side-by-side old-vs-modern comparisons: NgModules ↔ standalone, constructor DI ↔ `inject()`, `@Input()` ↔ `input()`, `*ngIf`/`*ngFor` ↔ `@if`/`@for`, `RouterModule.forRoot` ↔ `provideRouter`, `@ViewChild` ↔ `viewChild()`, class-based interceptors ↔ `HttpInterceptorFn`, and lifecycle hooks ↔ modern replacements. Includes guidance on when to migrate old code and when to leave it alone.
+
+**Appendix D — Resources.** Curated pointers for what to learn next: the official docs and blog, YouTube channels for tutorials (Joshua Morony, Decoded Frontend, Deborah Kurata, ng-conf and other conference channels), weekly newsletters, courses, community forums, and a suggested-next-projects section that outlines how to extend Compass with authentication, offline sync, habit tracking, and drag-and-drop using only the tools the book taught.
 
 ## Reading the PDF
 
@@ -243,17 +245,19 @@ learn-angular/
 │   ├── 20_where_to_go_next.md
 │   ├── 21_appendix_a_setup.md
 │   ├── 22_appendix_b_debugging.md
-│   └── 23_appendix_c_legacy.md
-├── content-he/                     # Hebrew content (complete, 23 files)
+│   ├── 23_appendix_c_legacy.md
+│   └── 24_appendix_d_resources.md
+├── content-he/                     # Hebrew content (complete, 24 files)
 │   ├── 00_frontmatter.md
 │   ├── 01_what_is_angular.md
 │   ├── … (20 chapters)
 │   ├── 21_appendix_a_setup.md
 │   ├── 22_appendix_b_debugging.md
-│   └── 23_appendix_c_legacy.md
+│   ├── 23_appendix_c_legacy.md
+│   └── 24_appendix_d_resources.md
 └── build/
-    ├── learn_angular.pdf           # the latest English build (313 pp)
-    └── learn_angular_he.pdf        # the latest Hebrew build (327 pp)
+    ├── learn_angular.pdf           # the latest English build (323 pp)
+    └── learn_angular_he.pdf        # the latest Hebrew build (336 pp)
 ```
 
 Chapters are ordered by filename prefix; `build.py` sorts them lexically before assembly. To reorder, rename.

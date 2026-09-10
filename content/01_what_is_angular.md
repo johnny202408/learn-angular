@@ -66,15 +66,17 @@ Compass, the app you are about to build, sits squarely in Angular's sweet spot: 
 
 ## What Compass will be, at the end
 
-By the last chapter, Compass will be a real, if small, application. Here is a preview so you know where the road leads.
+By the last chapter, Compass will be a real, if small, application. Here is an honest preview so you know where the road leads.
 
-You will open Compass in your browser and see a login screen. You will sign in with an email address; a confirmation link will arrive; you will click it, and Compass will remember you on this device. You will land on a dashboard showing today's tasks and the habits you are tracking this week.
+You will open Compass in your browser and see a list of tasks, loaded from a real HTTP backend and rendered by a component tree you built. You will add a task by typing into a reactive form, hitting Enter, and watching it appear immediately — with optimistic UI updates that revert cleanly if the server fails. You will click a task to open its detail page (a real route, with URL parameters bound to component inputs), edit its title, due date, and tags with a form that has real validation, and save it back to the server.
 
-You will add a task by pressing a button, filling out a form, and hitting save. It will appear immediately. If your internet is off, it will still appear immediately, marked with a small icon that says "not yet synced," and when your internet comes back it will save quietly in the background. You will drag tasks between "today," "this week," and "later." You will mark habits done with a click; a streak counter next to each habit will update.
+You will have a *stats* page — a separate route, lazily loaded, whose chart-rendering component is deferred until it scrolls into view. You will have configured server-side rendering so first-time visitors get a fully-rendered page before Angular has finished booting on their device. You will have a test suite covering the store's business logic and the critical user flows.
 
-You will navigate to a *stats* page and see a chart of your habit completions across the last thirty days. You will click a habit to see its history. You will visit a settings page where you can change your display name and pick a theme.
+You will have deployed the whole thing to a hosting provider via a CI pipeline that runs your tests on every push.
 
-Every one of those features is a place in the book. The login screen and email confirmation live in the routing and forms chapters. The offline-first behavior lives in the HTTP and state chapters. The chart lives in the components-and-templates chapter, and again in the performance chapter when we make it fast enough not to matter on a phone. The tests you will write for all of it live in Part V.
+Every one of those capabilities is a place in the book. The list and detail views live in the components and routing chapters. Reactive forms and validation live in Chapter 12. HTTP with optimistic updates and revert is Chapter 10. Lazy loading and `@defer` are Chapters 13 and 16. SSR is Chapter 18, testing is Chapter 17, and deployment is Chapter 19.
+
+There is also a set of features that a fully-featured task-and-habit tracker would have but that we *deliberately* don't build in this book: authentication, offline sync with a mutation queue, drag-and-drop between "today" and "later" buckets, habit-tracking with streak counters. Those are excellent next projects — the tools you'll have by Chapter 20 are exactly the ones you'd reach for. Appendix D points at the resources that will get you there.
 
 You will finish the book with an application that is small enough to hold in your head and rich enough to justify every idea Angular offers.
 

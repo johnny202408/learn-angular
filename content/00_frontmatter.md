@@ -14,7 +14,9 @@
 
 If you have never built a web application before, this book is written for you. It assumes you can read English, use a computer, and are willing to type things into an editor and see what happens. It does not assume you know what a framework is, what TypeScript is, or why anyone would voluntarily use something called *dependency injection*. By the last chapter, all of those words will feel like tools you reach for, not jargon you tolerate.
 
-The book is built around a single application called **Compass** — a personal task and habit tracker. In Chapter 4 you will type `ng new compass` and see an empty starter appear on your screen. Every chapter after that adds one real capability to Compass. By the end you will have written a real app: it will let you sign in, plan your week, track streaks, work offline, sync when you reconnect, and run in a browser on the public internet.
+The book is built around a single application called **Compass** — a personal task tracker. In Chapter 4 you will type `ng new compass` and see an empty starter appear on your screen. Every chapter after that adds one real capability to Compass. By the end you will have written a real app: it will let you manage a real task list backed by a real HTTP server, edit tasks with reactive forms, navigate between screens, render fast on a phone, and run in a browser on the public internet — with the tests and CI pipeline that a real app deserves.
+
+Compass is deliberately not a full-featured productivity suite. Authentication, offline sync, drag-and-drop, and habit-tracking are excellent *next* projects — the tools you'll have by Chapter 20 are exactly the ones you'd reach for to build them, and Appendix D points at where to go next. But the book's promise is to teach Angular, not to ship every feature a real task app might have.
 
 Learning by building has two advantages that reading-first books tend to give up. The first is that every concept lands somewhere. When you meet a new idea — say, an *interceptor* — you do not just read a definition; you write one, watch it change the behavior of your app, and then break it on purpose to see what happens. The second is that you end with something. Compass is small enough to hold in your head and rich enough to show a friend. It is also yours: nothing in this book is a puzzle whose answer is hidden at the back.
 
@@ -32,7 +34,7 @@ The book has five parts and a set of appendices.
 
 **Part V — Production.** Testing, server-side rendering, deployment, and the ecosystem you are joining. When you finish Part V you will have a Compass instance on the internet, and you will know what to search for next.
 
-**Appendices.** A machine setup guide, a debugging checklist, and a short tour of older Angular idioms you will encounter in existing codebases. Read them when you need them; they are reference material, not sequential.
+**Appendices.** A machine setup guide, a debugging checklist, a short tour of older Angular idioms you will encounter in existing codebases, and a curated list of resources — YouTube channels, blogs, courses, and communities — for continuing your Angular education after the book. Read them when you need them; they are reference material, not sequential.
 
 ### How to read this book
 
