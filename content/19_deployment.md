@@ -225,12 +225,14 @@ Both are optional; both are usually worth setting up before you tell anyone abou
 Real-user monitoring (RUM) tracks how the app performs for actual users, on their actual devices. Web Vitals — LCP, FID, CLS — are standardized metrics you can measure with `web-vitals` (the library):
 
 ```ts
-import { onCLS, onFID, onLCP } from 'web-vitals';
+import { onCLS, onINP, onLCP } from 'web-vitals';
 
 onCLS(metric => sendToAnalytics(metric));
-onFID(metric => sendToAnalytics(metric));
+onINP(metric => sendToAnalytics(metric));
 onLCP(metric => sendToAnalytics(metric));
 ```
+
+(Older code used `onFID`, but `web-vitals` v4 removed it in favor of `onINP` — Interaction to Next Paint, a more accurate responsiveness metric.)
 
 Each host provides its own RUM if you prefer not to roll your own.
 

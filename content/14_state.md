@@ -173,19 +173,26 @@ When you reach for something bigger — NgRx SignalStore or classic NgRx — thi
 A sketch:
 
 ```ts
-import { signalStore, withState, withMethods, withEntities } from '@ngrx/signals';
+import { signalStore, withState, withMethods } from '@ngrx/signals';
+import { withEntities } from '@ngrx/signals/entities';
+import { inject } from '@angular/core';
 
 export const TaskStore = signalStore(
   { providedIn: 'root' },
   withEntities<Task>(),
   withState({ loading: false, error: null as string | null }),
-  withMethods((store, api = inject(TasksApi)) => ({
-    async load() { /* ... */ },
-    async add(title: string) { /* ... */ },
-    // ...
-  })),
+  withMethods((store) => {
+    const api = inject(TasksApi);
+    return {
+      async load() { /* ... */ },
+      async add(title: string) { /* ... */ },
+      // ...
+    };
+  }),
 );
 ```
+
+(Note that `withEntities` lives in `@ngrx/signals/entities`, not the main `@ngrx/signals` package. And `inject()` is called inside the `withMethods` factory body — not as a default parameter — because factories run in an injection context.)
 
 SignalStore is opinionated and modestly sized. You do not need it for Compass; hand-rolled stores work fine. When you find that all your stores use similar entity-indexing code, SignalStore is the natural place to reach.
 

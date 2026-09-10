@@ -266,11 +266,10 @@ Signals in the fake need to be actual signals — the component reads them with 
 
 Unit tests exercise pieces. End-to-end (E2E) tests exercise the whole thing: a real browser, a real server, a real user flow.
 
-Angular no longer scaffolds Protractor. Playwright is the modern choice; the CLI has an official schematic:
+Angular no longer scaffolds Protractor. Playwright is the modern choice; add it with:
 
 ```bash
-ng add @angular-eslint/schematics    # if you don't have it
-ng add @playwright/test              # or manually per Playwright docs
+ng add playwright-ng-schematics      # or follow Playwright's own docs
 ```
 
 A Playwright test:
@@ -297,12 +296,12 @@ E2E tests are slow and flakey by nature (real network, real timing). Do not try 
 The router has its own testing utilities. `RouterTestingHarness` is the modern way:
 
 ```ts
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 
 it('navigates to task detail', async () => {
   await TestBed.configureTestingModule({
-    providers: [provideRouter(routes)],
+    providers: [provideRouter(routes, withComponentInputBinding())],
   }).compileComponents();
 
   const harness = await RouterTestingHarness.create();
@@ -310,6 +309,8 @@ it('navigates to task detail', async () => {
   expect(detail.id()).toBe('t1');
 });
 ```
+
+(The `withComponentInputBinding()` is essential — without it, `TaskDetail`'s `id = input.required<string>()` won't receive the route param and reading `detail.id()` will throw.)
 
 Guards and resolvers are functions; test them with a `TestBed` that provides their dependencies, and call them directly:
 
@@ -346,8 +347,10 @@ Skip the trivial. Do not test that `TaskList` sets `title = 'Tasks'`. Do not tes
 Every test in `.spec.ts` runs with `ng test`. In CI, run it headless:
 
 ```bash
-ng test --browsers=ChromeHeadlessNoSandbox --watch=false
+ng test --browsers=ChromeHeadless --watch=false
 ```
+
+(Some CI environments need the no-sandbox flag on Chrome — if you hit that, define a `customLaunchers` entry in `karma.conf.js` extending `ChromeHeadless` with `flags: ['--no-sandbox']`, and reference it here.)
 
 Playwright:
 

@@ -114,6 +114,8 @@ Two-way binding is Angular's syntax for the common pattern of "bind a property i
 <input [(ngModel)]="task.title" />
 ```
 
+`ngModel` is a directive from `@angular/forms` — using it requires adding `FormsModule` to the component's `imports:` array. If you paste this into a standalone component without that import, the template compiler will complain with "Can't bind to 'ngModel'."
+
 Reading right to left, the parentheses inside the brackets are the "banana in a box" mnemonic. The syntax expands to a property binding on `ngModel` and an event binding on `ngModelChange`:
 
 ```html
@@ -125,7 +127,7 @@ Reading right to left, the parentheses inside the brackets are the "banana in a 
 
 ## The new control flow
 
-Templates need to make decisions ("show this if the user is logged in") and repeat ("render one row per task"). Angular's modern syntax for these is called *the new control flow*: `@if`, `@for`, `@switch`, `@empty`, and `@let`. They replace an older set of *structural directives* — `*ngIf`, `*ngFor`, `*ngSwitchCase` — that you will still see in existing codebases. Both work; the new syntax is the recommended default in every project created after mid-2024.
+Templates need to make decisions ("show this if the user is logged in") and repeat ("render one row per task"). Angular's modern syntax for these is called *the new control flow*: `@if`, `@for` (with its `@empty` sub-block), `@switch`, and the local-variable form `@let`. They replace an older set of *structural directives* — `*ngIf`, `*ngFor`, `*ngSwitchCase` — that you will still see in existing codebases. Both work; the new syntax became stable in Angular 17 (late 2023) and is the recommended default in every project since.
 
 ### `@if` and `@else`
 
@@ -184,13 +186,15 @@ And, importantly, an `@empty` block:
 For multi-branch dispatch on a single value:
 
 ```html
-@switch (task.status) {
-  @case ('todo') { <span class="badge todo">To do</span> }
-  @case ('doing') { <span class="badge doing">In progress</span> }
-  @case ('done') { <span class="badge done">Done</span> }
-  @default { <span class="badge">?</span> }
+@switch (badgeFor(task)) {
+  @case ('overdue') { <span class="badge overdue">Overdue</span> }
+  @case ('due-today') { <span class="badge today">Today</span> }
+  @case ('later') { <span class="badge later">Later</span> }
+  @default { <span class="badge">—</span> }
 }
 ```
+
+(The `badgeFor(task)` method returns one of those literal strings based on the task's `dueDate` and `done` fields. Compass's `Task` interface has `done` and `dueDate`, not a `status` field.)
 
 You can nest `@switch` inside `@for`, `@if` inside `@switch`, and so on. There are no restrictions.
 
@@ -209,7 +213,7 @@ You can nest `@switch` inside `@for`, `@if` inside `@switch`, and so on. There a
 }
 ```
 
-Two things to know: `@let` bindings are scoped to their surrounding block; and the expression is re-evaluated whenever inputs change, so the binding stays fresh.
+Two things to know: `@let` bindings are scoped to their surrounding block; and the expression is re-evaluated on every change-detection cycle (like any template binding), so the binding stays fresh whenever any of its inputs change.
 
 ## Pipes: transform in-place
 

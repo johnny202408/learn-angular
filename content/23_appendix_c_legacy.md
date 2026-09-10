@@ -25,7 +25,7 @@ If you are inside a codebase built around NgModules, look for:
 - Components without `standalone: true` (or `standalone: false` explicitly).
 - `SharedModule` files that re-export common declarations.
 
-Migration path: `ng generate @angular/core:standalone-migration` is a schematic that converts an NgModule-based app to standalone components in one pass. It works well; take a snapshot beforehand.
+Migration path: `ng generate @angular/core:standalone` is a schematic that converts an NgModule-based app to standalone components in one pass. It works well; take a snapshot beforehand.
 
 ## Constructor DI vs `inject()`
 
@@ -123,7 +123,7 @@ The decorator forms still work. Signal inputs (`input()`) give you a reactive va
 }
 ```
 
-The new control flow is cleaner, faster, and doesn't need `CommonModule` in imports. There is a migration schematic: `ng generate @angular/core:control-flow-migration`.
+The new control flow is cleaner, faster, and doesn't need `CommonModule` in imports. There is a migration schematic: `ng generate @angular/core:control-flow`.
 
 The old forms require `CommonModule` (or the specific directives) in the component's imports; the new forms don't require anything.
 

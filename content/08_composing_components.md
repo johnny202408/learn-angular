@@ -199,7 +199,9 @@ import { AddTaskForm } from '../add-task-form/add-task-form';
 })
 export class TaskList {
   tasks = signal<Task[]>([
-    /* initial tasks unchanged from Chapter 7 */
+    { id: 't1', title: 'Buy milk', done: false, createdAt: '2026-01-15T09:00:00Z', dueDate: null, tags: ['home'] },
+    { id: 't2', title: 'Write chapter 8', done: true, createdAt: '2026-01-14T18:30:00Z', dueDate: '2026-01-16T00:00:00Z', tags: ['work'] },
+    { id: 't3', title: 'Call the plumber', done: false, createdAt: '2026-01-15T11:00:00Z', dueDate: '2026-01-18T00:00:00Z', tags: ['home', 'urgent'] },
   ]);
 
   remaining = computed(() => this.tasks().filter(t => !t.done).length);
@@ -296,8 +298,11 @@ Some components are not defined by the data they receive, but by the *content th
 Here is a `Card` component:
 
 ```ts
+import { Component, input } from '@angular/core';
+
 @Component({
   selector: 'app-card',
+  imports: [],
   template: `
     <div class="card">
       <h2 class="card-title">{{ title() }}</h2>

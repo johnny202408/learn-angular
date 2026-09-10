@@ -36,17 +36,17 @@ The schematic does several things:
 
 1. Adds `@angular/ssr` and Express as dependencies.
 2. Creates `server.ts` at the project root — an Express server that renders Angular for each request.
-3. Adds a `server` build target to `angular.json` and a `serve-ssr` script.
-4. Modifies `main.ts` to accept both browser and server bootstraps.
+3. Adds a `server` build target to `angular.json`.
+4. Adds `main.server.ts` — the server-side entry point (your browser-side `main.ts` stays as it was).
 5. Adds `app.config.server.ts` for server-only providers.
 6. Enables hydration via `provideClientHydration()` in `app.config.ts`.
 
 After it finishes:
 
 ```bash
-npm run start:ssr        # dev server with SSR
-npm run build            # builds both browser and server bundles
-npm run serve:ssr:compass  # runs the built server
+ng serve                       # dev server; SSR-enabled once the schematic has run
+npm run build                  # builds both browser and server bundles
+npm run serve:ssr:compass      # runs the built server on port 4000
 ```
 
 Open `http://localhost:4000` (the default SSR port). View the source of the page (right-click → View Source). You will see the fully-rendered task list in the HTML — not just an empty `<app-root>`. Refresh and inspect the network tab; the first response arrives already populated.
@@ -102,12 +102,12 @@ When the server renders Compass's home page, it fetches tasks from the API. When
 Angular has *transfer state* to solve this. Wrap HTTP with `withHttpTransferCacheOptions` in `app.config.ts`:
 
 ```ts
-import { provideHttpClient, withFetch, withInterceptors, withHttpTransferCacheOptions } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
 
 providers: [
-  provideHttpClient(
-    withFetch(),
-    withInterceptors([authInterceptor]),
+  provideHttpClient(withFetch()),
+  provideClientHydration(
     withHttpTransferCacheOptions({
       includeHeaders: [],
       includePostRequests: false,
@@ -218,6 +218,6 @@ Chapter 19 deploys Compass to the internet. Static hosting for a client-rendered
 
 1. Enable SSR on Compass, build it, and serve it. View source on the home page. Compare the size of the initial HTML response now versus before SSR (network tab, "Doc" filter, look at "Size"). Was there a meaningful change?
 
-2. Add `provideClientHydration()` if it isn't there; then break hydration on purpose by adding `<span>{{ Math.random() }}</span>` to a component template. Open the console; you should see a hydration mismatch warning. Fix it by moving the random call behind an `afterNextRender`.
+2. Add `provideClientHydration()` if it isn't there; then break hydration on purpose by exposing a `now = Date.now()` property on a component and rendering `{{ now }}` in its template. Open the console; you should see a hydration mismatch warning because the server and client compute different timestamps. Fix it by either (a) guarding the value with `isPlatformBrowser` so it only exists on the client, or (b) marking the element with `ngSkipHydration` so Angular skips matching it.
 
 3. Add title and description meta tags to the task detail route, so a task's URL, when shared to Slack or a messaging app, unfurls with a useful preview. Test with the Facebook Sharing Debugger or the Twitter Card Validator on your deployed URL (Chapter 19 gets you deployed).

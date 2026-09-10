@@ -58,23 +58,23 @@ Modern Angular can run without Zone.js entirely. Change detection triggers only 
 Enabling it is one line in `app.config.ts`:
 
 ```ts
-import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 providers: [
-  provideExperimentalZonelessChangeDetection(),
+  provideZonelessChangeDetection(),
   // Remove provideZoneChangeDetection() if it's there.
 ],
 ```
 
 Then remove the `zone.js` polyfill from `angular.json` (in the `polyfills` array).
 
-In a signal-first app — which Compass is — zoneless works. The parts that would break under zoneless are:
+`provideZonelessChangeDetection` is the stable API (Angular v20+). Earlier versions used `provideExperimentalZonelessChangeDetection`, which was renamed once the feature stabilized — if you're on an older Angular, use that spelling. In a signal-first app — which Compass is — zoneless works. The parts that would break under zoneless are:
 
 - Code that relies on `setTimeout` to cause a re-render. Rewrite to update a signal.
 - `Promise.then` chains that update state without going through signals or `async` pipe. Same fix.
 - Third-party libraries that dispatch DOM events outside Angular's awareness. Wrap the event source with a signal or an Observable that Angular can track.
 
-Zoneless is still marked experimental at the time of writing, but every design decision in this book has been zoneless-ready. Switching in the future should be one commit.
+Zoneless is stable as of Angular v20 (was called *experimental* zoneless in v18/v19). Every design decision in this book has been zoneless-ready — the switch is a single provider change plus removing the `zone.js` polyfill.
 
 ## `@defer` blocks
 
@@ -103,11 +103,11 @@ The parts:
 
 Triggers other than `on viewport`:
 
-- `on idle` — when the browser is idle after page load.
-- `on interaction` — when the user hovers or focuses a specified element.
-- `on hover` — a special case of interaction.
+- `on idle` — when the browser is idle after page load (fires via `requestIdleCallback`).
+- `on interaction` — when the user clicks or presses a key on a specified element.
+- `on hover` — when the user hovers or focuses (`mouseenter`/`focusin`) — distinct from `interaction`.
 - `on timer(30s)` — after a fixed delay.
-- `on immediate` — as soon as the app is idle (rarely useful; if it's immediate, why defer?).
+- `on immediate` — as soon as non-deferred content on the page has finished rendering (useful for background chunks that don't need to block the initial paint).
 - `when someSignal()` — programmatic trigger.
 
 Deferred blocks are separate chunks in the build output. They download in the background, chunked by trigger. `@defer` is the single largest lever most Angular apps have for reducing initial bundle size without lazy-loading whole routes.
@@ -137,7 +137,7 @@ import { NgOptimizedImage } from '@angular/common';
 Notes:
 
 - `ngSrc` (not `src`) enables the directive.
-- `width` and `height` are required. They prevent layout shift.
+- `width` and `height` are required — *unless* you use `fill`, which sizes the image to fill its positioned parent (useful for responsive layouts). Either way, the directive prevents layout shift.
 - `priority` marks this image as the LCP candidate. Include it on at most one image per screen.
 - Off-screen images without `priority` are lazy-loaded by default.
 

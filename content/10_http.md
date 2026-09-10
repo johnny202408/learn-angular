@@ -44,14 +44,15 @@ Because we're running Compass on `http://localhost:4200` and the API on `http://
 `HttpClient` is Angular's built-in HTTP service. It arrives via DI, and it needs to be provided at the app level. Edit `src/app/app.config.ts`:
 
 ```ts
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(withFetch()),
   ],
@@ -272,6 +273,9 @@ Now every request sent by `HttpClient` picks up the header, without `TasksApi` h
 Interceptors also make error handling uniform. A `logout on 401` interceptor:
 
 ```ts
+import { HttpInterceptorFn } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
+
 export const authGuardInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError(err => {

@@ -114,7 +114,7 @@ The effect function runs once immediately (to establish dependencies) and again 
 Rules of the road for effects:
 
 - **Register effects in a DI context.** In a component, that means the constructor or a class field initializer. Outside those, use `runInInjectionContext`.
-- **Never write to a signal from inside an effect.** Doing so creates a loop where the effect triggers itself. Angular will refuse to run the effect if it detects this pattern.
+- **Be careful writing to signals from inside an effect.** Writing to a signal that the same effect *reads* creates a cycle: the write re-triggers the effect, which writes again. Angular will throw or warn on obvious cycles. Writing to *unrelated* signals is allowed and sometimes necessary, but reach for it sparingly — most of the time, a `computed` is what you actually want.
 - **Reach for `computed` first.** If you find yourself writing an effect that reads signals and computes a value, that is a computed. Effects are for outputs to the outside world.
 
 Effects are the closest thing signals have to a footgun. Used well, they replace lifecycle hooks and observable subscriptions. Used badly, they create spooky action at a distance. Chapter 14 revisits them when we build a signal-based state layer.
@@ -135,7 +135,9 @@ import { Task } from '../task';
 })
 export class TaskList {
   tasks = signal<Task[]>([
-    /* ... the three initial tasks from Chapter 5 ... */
+    { id: 't1', title: 'Buy milk', done: false, createdAt: '2026-01-15T09:00:00Z', dueDate: null, tags: ['home'] },
+    { id: 't2', title: 'Write chapter 7', done: true, createdAt: '2026-01-14T18:30:00Z', dueDate: '2026-01-16T00:00:00Z', tags: ['work'] },
+    { id: 't3', title: 'Call the plumber', done: false, createdAt: '2026-01-15T11:00:00Z', dueDate: '2026-01-18T00:00:00Z', tags: ['home', 'urgent'] },
   ]);
 
   draft = signal('');
@@ -234,7 +236,7 @@ export class TaskRow {
   // In methods and computed, read it like any other signal:
   isOverdue = computed(() => {
     const t = this.task();
-    return t.dueDate !== null && new Date(t.dueDate) < new Date();
+    return t.dueDate !== null && !t.done && new Date(t.dueDate) < new Date();
   });
 }
 ```

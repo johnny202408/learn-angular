@@ -38,15 +38,15 @@ If the Components tab shows "Angular is not detected," you are looking at a page
 
 Angular errors are three parts: an **NG code** (like `NG0100`), a **short message**, and a **detailed message with a link**.
 
-The NG code is your best friend. Search for it: `NG0100 site:angular.dev` or `NG0100 site:angular.io`. The official docs have an explanation with common causes for every code.
+The NG code is your best friend. Search for it: `NG0100 site:angular.dev`. The official docs have an explanation with common causes for every code. (`angular.io` is a legacy domain that redirects to `angular.dev`; search results still work, but the current canonical domain is `.dev`.)
 
 The most common codes:
 
-- **NG0100 — ExpressionChangedAfterItHasBeenCheckedError.** Something changed a bound value during change detection. Look for a value being written in a `ngAfterViewInit` or in an expression that computes different results on consecutive calls.
+- **NG0100 — ExpressionChangedAfterItHasBeenCheckedError.** Something changed a bound value during change detection. Look for a value being written in `ngAfterViewInit` or in an expression that computes different results on consecutive calls.
 - **NG0200 — Circular dependency in DI.** Two services depend on each other. Redesign.
 - **NG0201 — No provider found.** You injected something the current injector doesn't know about. Add `providedIn: 'root'` on the service, or `providers: [...]` in `app.config.ts`.
-- **NG0304 — Component ChangeDetection cycle.** A signal or effect is writing to state it also reads. Untangle the cycle.
-- **NG05104 — NullInjectorError: No provider for HttpClient.** You forgot `provideHttpClient()` in `app.config.ts`.
+- **NG0950 — Required input is missing.** A component declared `input.required<T>()` but the parent didn't supply a value. Usually a `[value]` binding you forgot on `<app-thing>`.
+- **NG05104 — Root element was not found.** The element `bootstrapApplication` was looking for (matching the root component's selector) isn't in `index.html`. Check that `<app-root>` (or whatever your selector is) exists in `src/index.html`.
 
 The "detailed message with a link" is generated at runtime and is often the most useful part. It tells you which component, which template line, which expression.
 

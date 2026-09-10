@@ -176,7 +176,10 @@ export class LongPressDirective {
 
     destroyRef.onDestroy(() => {
       el.removeEventListener('mousedown', start);
-      // ...others...
+      el.removeEventListener('touchstart', start);
+      el.removeEventListener('mouseup', cancel);
+      el.removeEventListener('mouseleave', cancel);
+      el.removeEventListener('touchend', cancel);
       cancel();
     });
   }
@@ -281,15 +284,15 @@ A checklist for "component, directive, or pipe."
 
 Getting this right saves a lot of code. Wrapping a `<div>` in an `<app-tooltip-host>` component when a `[appTooltip]` directive would do doubles the elements in the DOM. Pipe-ing a computation when a component-owned `computed` would do fragments the logic across the codebase.
 
-## The three prefixes: `app-`, `app`, `app-`
+## Naming conventions
 
-Convention:
+Convention across kinds of reusable UI:
 
-- Components: `<app-thing>` (kebab-case tag with prefix).
-- Directives: `[appThing]` (camelCase attribute with prefix).
-- Pipes: `{{ x | appThing }}` (short, camelCase).
+- **Components** get an `app-` prefix on the tag: `<app-task-row>`, `<app-card>`.
+- **Directives** get an `app` prefix on the attribute selector: `[appAutofocus]`, `[appLongPress]`.
+- **Pipes** are usually unprefixed (`timeAgo`, `truncate`) because they don't collide with HTML the way tags and attributes do — the framework's built-in pipes are also unprefixed. A prefix is fine if you're publishing a library, but application code rarely needs it.
 
-The Angular team prefers directives *not* to use the prefix for their attribute selector when the directive is generic (like `ngIf`). For application-code directives you write yourself, the prefix keeps things unambiguous.
+For application-code components and directives, the prefix keeps things unambiguous. For pipes, keep the name short and specific.
 
 ## What comes next
 

@@ -175,7 +175,7 @@ ng generate component edit-task
 `edit-task.ts`:
 
 ```ts
-import { Component, inject, input, output } from '@angular/core';
+import { Component, effect, inject, input, output } from '@angular/core';
 import {
   FormArray, FormBuilder, FormControl, FormGroup,
   ReactiveFormsModule, Validators
@@ -202,21 +202,21 @@ export class EditTask {
   });
 
   constructor() {
-    // Populate the form when task changes.
-    this.setFromTask();
-  }
-
-  private setFromTask(): void {
-    const t = this.task();
-    this.form.patchValue({
-      title: t.title,
-      dueDate: t.dueDate,
+    // Populate the form when the task input arrives — required inputs are only
+    // set *after* construction, so we use `effect` to react once `task()` becomes
+    // available. Effects run on registration, but `task()` will throw if we read
+    // it here — so guard with a try/catch and let the second effect run do the work.
+    effect(() => {
+      // Read task() lazily so the effect only actually populates once Angular
+      // has bound the input.
+      const t = this.task();
+      this.form.patchValue({ title: t.title, dueDate: t.dueDate });
+      const tagsArray = this.form.controls.tags;
+      tagsArray.clear();
+      for (const tag of t.tags) {
+        tagsArray.push(this.fb.nonNullable.control(tag, Validators.required));
+      }
     });
-    const tagsArray = this.form.controls.tags;
-    tagsArray.clear();
-    for (const tag of t.tags) {
-      tagsArray.push(this.fb.nonNullable.control(tag, Validators.required));
-    }
   }
 
   addTag(): void {
@@ -380,7 +380,20 @@ export class TaskList {
 }
 ```
 
-(You will need to add `applyChanges` to `TaskStore`. It calls `TasksApi.update` and applies the returned task to the signal, with optimistic revert on failure — very similar to `toggle`.)
+You will need to add `applyChanges` to `TaskStore`. It's very similar to `toggle` — apply an optimistic update, call the API, revert on failure:
+
+```ts
+async applyChanges(id: string, changes: Partial<Task>): Promise<void> {
+  const previous = this._tasks();
+  this._tasks.update(all => all.map(t => (t.id === id ? { ...t, ...changes } : t)));
+  try {
+    await this.api.update(id, changes);
+  } catch {
+    this._tasks.set(previous);
+    this._error.set('Could not save changes.');
+  }
+}
+```
 
 Template:
 

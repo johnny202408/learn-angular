@@ -26,7 +26,7 @@ The pattern is the same in each: install, import, use. The right choice depends 
 
 Chapter 14 introduced state patterns. The libraries worth knowing beyond that:
 
-- **`@ngrx/signals`** — signal-based state, with `signalStore`, `withEntities`, and effects.
+- **`@ngrx/signals`** — signal-based state with `signalStore` and `withState`/`withMethods`/`withComputed` features. `withEntities` (from `@ngrx/signals/entities`) adds indexed entity management; `rxMethod` (from `@ngrx/signals/rxjs-interop`) is how you attach RxJS-driven side effects.
 - **`@ngrx/store`** — the classic Redux-for-Angular. Actions, reducers, selectors, effects. Bigger commitment, bigger payoff on complex apps.
 - **`@ngrx/data`** — reduces the "we need an entity store" boilerplate on top of Store.
 - **`@rx-angular/state`** — a lighter, RxJS-first alternative to NgRx.
@@ -94,7 +94,7 @@ Read for a few hours, following one feature end-to-end. Note idioms you didn't k
 
 Angular has a well-run release cadence and a reasonable public record. Where to keep up:
 
-- **The official blog** at `blog.angular.io` announces releases and RFCs.
+- **The official blog** at `blog.angular.dev` announces releases and RFCs. (`blog.angular.io` redirects there — the `.io` domain is legacy.)
 - **The Angular Twitter/X account** (`@angular`) posts release videos.
 - **This Week in Angular** (a newsletter, findable via web search) summarizes the ecosystem weekly.
 - **YouTube channels**: Deborah Kurata, Joshua Morony, Angular Air, Angular Nation — good for feature deep-dives.

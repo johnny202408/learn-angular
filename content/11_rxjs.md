@@ -153,7 +153,6 @@ Most of Compass's state lives in signals. Most of Angular's built-in APIs emit O
 
 ```ts
 import { toSignal } from '@angular/core/rxjs-interop';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 class TaskList {
   private route = inject(ActivatedRoute);
@@ -216,7 +215,7 @@ class TaskList {
 
 An Observable is *cold* if each subscriber gets its own run of the producer, and *hot* if all subscribers share one run.
 
-`http.get()` is cold: each subscription fires a new request. `fromEvent(document, 'click')` is hot: all subscribers get the same click events.
+`http.get()` is cold: each subscription fires a new request. `fromEvent(document, 'click')` is *also* cold, though it fools people: each subscribe attaches its own `addEventListener`, so multiple subscribers get their own listeners rather than a shared stream. If you want DOM events shared across subscribers, wrap with `share()` or convert to a signal.
 
 You will rarely have to think about this explicitly. Where it matters: if you `subscribe` to an `http.get` result twice, you fire two requests. Use `shareReplay(1)` to share one request among many subscribers, or convert to a signal.
 

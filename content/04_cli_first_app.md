@@ -213,17 +213,20 @@ Every chapter from Chapter 5 onward spends time inside components like this one.
 **`app.config.ts`** — the app-level configuration.
 
 ```ts
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
   ],
 };
 ```
+
+(Older CLI versions emit `provideZoneChangeDetection({ eventCoalescing: true })` instead of `provideZonelessChangeDetection()` and don't include `provideBrowserGlobalErrorListeners`. Both work; the modern defaults shown here are what current `ng new` produces.)
 
 `providers` is the list of services and configuration your app makes available everywhere. In modern Angular, most cross-cutting concerns are set up by calling `provideX()` functions here — routing, HTTP, animations, and so on. We will add several of them in later chapters.
 

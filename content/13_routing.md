@@ -240,10 +240,15 @@ export const requireAuth: CanMatchFn = () => {
 };
 ```
 
-Attach it in `app.routes.ts`:
+Attach it in `app.routes.ts` — note that the "code isn't downloaded when `canMatch` returns false" benefit only holds for **lazy-loaded routes**, so pair it with `loadComponent`:
 
 ```ts
-{ path: 'stats', component: Stats, canMatch: [requireAuth], title: 'Stats · Compass' },
+{
+  path: 'stats',
+  loadComponent: () => import('./stats/stats').then(m => m.Stats),
+  canMatch: [requireAuth],
+  title: 'Stats · Compass',
+},
 ```
 
 We won't add auth to Compass until Chapter 19 (deployment considers it), but you now know where auth guards go.
@@ -253,10 +258,15 @@ We won't add auth to Compass until Chapter 19 (deployment considers it), but you
 Some routes should not render until their data is loaded. A *resolver* is a function that runs before the route activates and blocks the navigation until it completes.
 
 ```ts
+import { ResolveFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { TaskStore } from './task-store';
+import { Task } from './task';
+
 export const taskResolver: ResolveFn<Task | undefined> = (route) => {
   const store = inject(TaskStore);
   const id = route.paramMap.get('id') ?? '';
-  return store.loadOne(id);
+  return store.tasks().find(t => t.id === id);
 };
 ```
 
