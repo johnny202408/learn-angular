@@ -1,15 +1,19 @@
 # Learn Angular by Building Compass
 
-**A project-driven, 313-page book that takes a total beginner from "what is a framework?" to a deployed, tested, offline-capable Angular application.**
+**A project-driven, ~370-page book that takes a total beginner from "what is a framework?" to a deployed, tested, offline-ready, accessible Angular application — available in English and Hebrew.**
 
-> This is the source for the book. All 20 chapters and 3 appendices live in `content/` as plain Markdown. A small Python script (`build.py`) assembles them into a single A5 PDF using WeasyPrint. Edit any chapter, rerun the script, and you have a fresh PDF.
+> This is the source for the book. All 20 chapters and 7 appendices live in `content/` (English) and `content-he/` (Hebrew) as plain Markdown. A small Python script (`build.py`) assembles them into A5 PDFs using WeasyPrint, with a full PDF outline for navigation. Edit any chapter, rerun the script, get a fresh PDF.
 
-Read it now: **[`build/learn_angular.pdf`](build/learn_angular.pdf)** (313 pages · ~950 KB)
+**Read the current build now:**
+
+- **[English PDF](build/learn_angular.pdf)** — 369 pages, ~50,000 words, clickable outline for every chapter, section, and subsection.
+- **[Hebrew PDF (עברית)](build/learn_angular_he.pdf)** — 378 pages, ~45,000 words, RTL layout, same coverage.
 
 ---
 
 ## Table of contents
 
+- [At a glance](#at-a-glance)
 - [About the book](#about-the-book)
 - [Who this book is for](#who-this-book-is-for)
 - [The Compass project](#the-compass-project)
@@ -19,36 +23,61 @@ Read it now: **[`build/learn_angular.pdf`](build/learn_angular.pdf)** (313 pages
   - [Part III — Services and the outside world](#part-iii--services-and-the-outside-world)
   - [Part IV — Building a real app](#part-iv--building-a-real-app)
   - [Part V — Production](#part-v--production)
-  - [Appendices](#appendices)
-- [Reading the PDF](#reading-the-pdf)
-- [Building the PDF from source](#building-the-pdf-from-source)
+  - [Appendices A–G](#appendices)
+- [Hebrew edition](#hebrew-edition)
+- [Reading the PDFs](#reading-the-pdfs)
+- [Building from source](#building-from-source)
+- [Iterating on the book](#iterating-on-the-book)
 - [Project structure](#project-structure)
 - [Design notes](#design-notes)
+- [Review history](#review-history)
+- [What the book deliberately doesn't build](#what-the-book-deliberately-doesnt-build)
 - [Contributing and feedback](#contributing-and-feedback)
 - [License](#license)
 
 ---
 
+## At a glance
+
+| | |
+|---|---|
+| **Target framework** | Angular 18+ (signals, standalone components, new control flow, `inject()`, zoneless-ready) |
+| **Target reader** | Total beginner to frontend development |
+| **Format** | A5 PDF (also raw Markdown source) |
+| **Editions** | English, Hebrew (RTL) |
+| **Length** | 369 pages English · 378 pages Hebrew |
+| **Structure** | 20 chapters + 7 appendices, 5 parts |
+| **Spine project** | *Compass* — a personal task tracker that grows across chapters |
+| **Pedagogy** | Project-driven; every concept introduced in service of one more feature |
+| **Build** | `python3 build.py` (English) or `python3 build.py --lang he` (Hebrew) |
+| **Source** | Plain Markdown in `content/` and `content-he/` |
+| **PDF navigation** | Full outline / bookmarks (~388 clickable entries per language) |
+
+---
+
 ## About the book
 
-Most framework books either fly over concepts before you can touch them, or drown you in setup for fifty pages before rendering a single pixel. This book takes a third path: you meet each concept exactly when you need it to add a feature to a real app, and each chapter's exercises reinforce that feature in code.
+Most framework books either fly over concepts before you can touch them, or drown you in setup for fifty pages before rendering a single pixel. This book takes a third path: each concept lands exactly when you need it to add a feature to a real app, and each chapter's exercises reinforce that feature in code. The reader ends with a deployed application, not a folder of tutorials.
 
-The book targets **modern Angular (v18+)** — signals, standalone components, the new control flow (`@if`, `@for`, `@switch`, `@defer`), `inject()`, signal-based `input()`/`output()`, `httpResource`, and the trajectory toward zoneless change detection. Older Angular idioms (NgModules, `*ngIf`, constructor DI, `@Input()`/`@Output()` decorators, RxJS-only state) get their own appendix so you can read legacy code, but the main text moves forward.
+The book targets **modern Angular (v18+)** — signals as the default reactive primitive, standalone components without NgModules, the new template control flow (`@if`, `@for`, `@switch`, `@defer`), the `inject()` function, signal-based `input()` / `output()` / `model()`, `httpResource`, `provideZonelessChangeDetection`, and the direction of travel toward fully zoneless apps. Older Angular idioms (NgModules, `*ngIf`, constructor DI, `@Input()` decorators, RxJS-only state) get their own appendix so you can read legacy code without confusion, but the main text stays modern.
 
 Highlights:
 
-- **313 pages, A5 book format**, with running headers, syntax-highlighted code blocks, and callouts for notes, warnings, and try-it experiments.
-- **~46,500 words** across 20 chapters and 3 appendices — dense enough to teach, loose enough to read at the keyboard.
-- **Every chapter ends with exercises** — a mix of code exercises, extensions to Compass, and reflection prompts.
+- **~50,000 words in English**, ~45,000 in Hebrew, delivered as A5 book pages with running headers, syntax-highlighted code blocks, and a full clickable PDF outline.
 - **Signals-first, zoneless-ready pedagogy** — the book teaches Angular in the direction it is going, not the direction it came from.
+- **Every chapter ends with exercises** — a mix of code exercises (with worked solutions in Appendix F) and reflection prompts.
+- **Complete Hebrew edition** — same coverage, same code, translated pedagogical prose with a consistent glossary (transliterated Angular-specific nouns, translated general terms).
+- **Reviewed by nine independent LLM agents** covering technical accuracy, internal consistency, code correctness, and Hebrew language quality — findings applied across three fix commits.
+- **Six diagrams** for the concepts where visual aids beat prose: Compass's component tree, DI resolution walk, three RxJS marble diagrams, change-detection comparison, SSR lifecycle.
+- **Accessibility appendix** covering `@angular/cdk/a11y`, ARIA in Angular templates, keyboard navigation, and route-change announcements.
 
 ## Who this book is for
 
 Written for **total beginners to frontend development**. It assumes:
 
-- You can read English.
+- You can read English (or Hebrew, for that edition).
 - You can use a computer and a terminal.
-- You are willing to type things into an editor and see what happens.
+- You are willing to type code into an editor and see what happens.
 
 It does **not** assume:
 
@@ -56,15 +85,15 @@ It does **not** assume:
 - Familiarity with TypeScript, Node.js, npm, or a build tool.
 - Knowledge of how HTTP or servers work.
 
-Chapter 2 teaches enough TypeScript to be productive. Chapter 3 covers the modern JavaScript features Angular relies on. Chapter 4 walks you through installing Node.js and the Angular CLI. If you know any of that already, skim; if you don't, take it slow — the rest of the book depends on it.
+Chapter 2 teaches enough TypeScript to be productive. Chapter 3 covers the modern JavaScript features Angular relies on. Chapter 4 walks you through installing Node.js and the Angular CLI. If you already know one of those, skim; if you don't, take it slow — everything from Chapter 5 onward assumes them.
 
 If you already write Angular professionally, this book is probably too gentle. It's designed for the first ~50 hours of the Angular learning curve, not the next 500.
 
 ## The Compass project
 
-**Compass** is a personal task and habit tracker. It has no code in this repository — it exists across the book's chapters as the vehicle for every concept. By the end of Chapter 20 you will have built:
+**Compass** is a personal task tracker. It has no code in this repository — it exists across the book's chapters as the vehicle for every concept. By Chapter 20 you will have built:
 
-| Feature | Chapter added |
+| Feature | Chapter |
 |---|---|
 | A single-screen to-do list with add and toggle | 5 – 6 |
 | A signals-driven reactive UI with computed counts | 7 |
@@ -72,133 +101,90 @@ If you already write Angular professionally, this book is probably too gentle. I
 | A shared `TaskStore` service via dependency injection | 9 |
 | A real HTTP backend with optimistic updates and revert | 10 |
 | Search-as-you-type with RxJS operators | 11 |
-| Reactive forms with validation and typed values | 12 |
+| Reactive forms with typed values and validation | 12 |
 | Routing, deep links, and lazy-loaded pages | 13 |
-| Cross-store state, offline queue, and persistence | 14 |
+| Cross-store state, offline queue sketch, and persistence | 14 |
 | Custom directives and pipes for reusable UI | 15 |
 | Performance tuning: OnPush, `@defer`, image optimization | 16 |
 | Unit, component-harness, and end-to-end tests | 17 |
 | Server-side rendering and hydration | 18 |
 | A deployed, CI-driven production build | 19 |
 
-Compass is deliberately small enough to hold in your head and rich enough to justify every idea Angular offers. When you finish, it will run on the public internet.
+Compass is deliberately small enough to hold in your head and rich enough to justify every idea Angular offers. When you finish, it runs on the public internet.
 
 ## Chapter-by-chapter guide
 
 ### Part I — Foundations
 
-**Chapter 1 — What Angular is, and when to reach for it.** A code-free map of where you are. Introduces the shape of a modern web app, the library-vs-framework distinction, and a plain-English tour of Angular's mental model. Ends with a preview of what Compass will become.
+**Chapter 1 — What Angular is, and when to reach for it.** A code-free map. Introduces the shape of a modern web app, the library-vs-framework distinction, and a plain-English tour of Angular's mental model. Ends with an honest preview of what Compass will (and won't) become.
 
-**Chapter 2 — TypeScript enough for Angular.** The working subset of TypeScript. Types, interfaces, unions and literal types, narrowing, generics (lightly), decorators (previewed), and the `!` / `?` / `??` operators. Motivated throughout by shapes the book will reuse — `Task`, `Habit`, `Session`.
+**Chapter 2 — TypeScript enough for Angular.** The working subset of TypeScript. Types, interfaces, unions and literal types, narrowing, generics (lightly), decorators previewed, and the `!` / `?` / `??` operators. Motivated by shapes the book reuses — `Task`, `Habit`, `Session`.
 
-**Chapter 3 — Modern JavaScript you'll actually use.** ES modules, arrow functions, template literals, destructuring, spread and rest, optional chaining, nullish coalescing, Promises, `async`/`await`, and the array methods (`map`, `filter`, `reduce`, `find`) you'll lean on in every chapter afterward.
+**Chapter 3 — Modern JavaScript you'll actually use.** ES modules, arrow functions, template literals, destructuring, spread and rest, optional chaining, nullish coalescing, Promises, `async`/`await`, and the array methods you'll lean on daily.
 
-**Chapter 4 — The CLI, your first app, and the anatomy of an Angular project.** Installing Node.js and the Angular CLI, running `ng new compass`, and a slow, file-by-file tour of everything the CLI produces (`package.json`, `angular.json`, `tsconfig.*`, `src/main.ts`, `src/index.html`, `src/app/*`). By the end, `ng serve` is running and every file makes sense.
+**Chapter 4 — The CLI, your first app, and the anatomy of an Angular project.** Installing Node.js and the Angular CLI, running `ng new compass`, and a slow, file-by-file tour of everything the CLI produces (`package.json`, `angular.json`, `tsconfig.*`, `src/main.ts`, `src/index.html`, `src/app/*`, including the modern `provideBrowserGlobalErrorListeners` / `provideZonelessChangeDetection` defaults).
 
 ### Part II — Components and templates
 
-**Chapter 5 — Components: the atom of an Angular app.** The `@Component` decorator field by field — selector, imports, template, styles. Inline vs external templates, view encapsulation, and the `:host` selector. You delete the CLI's starter and mount your first real component: a hardcoded task list.
+**Chapter 5 — Components: the atom of an Angular app.** The `@Component` decorator field by field — selector, imports, template, styles. Inline vs external templates, view encapsulation, and the `:host` selector. You delete the CLI's starter and mount your first real component.
 
-**Chapter 6 — Data binding and the new control flow.** Interpolation, property binding, event binding, and two-way binding. The modern `@if` / `@for` / `@switch` / `@let` syntax with `track`, `$index`, and `@empty`. Class and style shortcuts. Built-in pipes. Compass gains a click-to-toggle and an "add task" form.
+**Chapter 6 — Data binding and the new control flow.** Interpolation, property binding, event binding, and two-way binding. The modern `@if` / `@for` / `@switch` / `@let` syntax with `track`, `$index`, and `@empty` (the sub-block of `@for`). Class and style shortcuts. Built-in pipes. Explicit note on `ngModel` requiring `FormsModule`. Compass gains click-to-toggle and an "Add task" form.
 
-**Chapter 7 — Signals: reactive state that feels normal.** `signal`, `computed`, `effect`, `set` vs `update`, and the "produce new arrays, never mutate" rule. Signal inputs (`input.required()`) and model signals (`model()`). Rewrites Compass's fields as signals and explains the change-detection story that leads to zoneless Angular.
+**Chapter 7 — Signals: reactive state that feels normal.** `signal`, `computed`, `effect`, `set` vs `update`, and the "produce new arrays, never mutate" rule. Signal inputs (`input.required()`) and model signals (`model()`). Rewrites Compass's state as signals and lays out the zoneless-ready change-detection model.
 
-**Chapter 8 — Composing components.** Passing data down with `input()`, sending events up with `output()`, and two-way binding via `model()`. Content projection with `<ng-content>` and named slots. `viewChild()`. Refactors Compass into `TaskList` / `TaskRow` / `AddTaskForm` — the container-and-presentation shape.
+**Chapter 8 — Composing components.** Passing data down with `input()`, sending events up with `output()`, and two-way binding via `model()`. Content projection with `<ng-content>` and named slots. `viewChild()`. Refactors Compass into `TaskList` / `TaskRow` / `AddTaskForm` — the container-and-presentation shape. Includes an ASCII diagram of Compass's full component tree.
 
 ### Part III — Services and the outside world
 
-**Chapter 9 — Dependency injection, Angular's superpower.** Why DI exists, `@Injectable`, `providedIn: 'root'`, the `inject()` function, `provideX()` app-level providers, hierarchical injectors, and `InjectionToken`. Extracts Compass's task state into a shared `TaskStore` service.
+**Chapter 9 — Dependency injection, Angular's superpower.** Why DI exists, `@Injectable`, `providedIn: 'root'`, the `inject()` function, `provideX()` app-level providers, hierarchical injectors (with a walk-up diagram), and `InjectionToken`. Extracts Compass's task state into a shared `TaskStore`.
 
-**Chapter 10 — HTTP: talking to real APIs.** `HttpClient`, request/response types, `firstValueFrom`, optimistic updates with rollback, HTTP interceptors (auth headers, 401 handling), and the modern `httpResource` for signal-integrated fetches. Wires Compass to a `json-server` backend so tasks persist across refreshes.
+**Chapter 10 — HTTP: talking to real APIs.** `HttpClient`, request/response types, `firstValueFrom`, optimistic updates with rollback, HTTP interceptors (with imports), and the modern `httpResource` for signal-integrated fetches. Wires Compass to a `json-server` backend.
 
-**Chapter 11 — RxJS essentials.** What an Observable is (contrasted with Promises and signals), the fifteen operators you'll actually reach for (`map`, `filter`, `tap`, `debounceTime`, `distinctUntilChanged`, `switchMap`, `exhaustMap`, `catchError`, `retry`, `combineLatest`…), and the two-way interop with signals via `toSignal` and `toObservable`. Builds a search-as-you-type pipeline. Ends with a clear "signals for state, RxJS for streams" rule.
+**Chapter 11 — RxJS essentials.** What an Observable is (contrasted with Promises and signals), the fifteen operators you'll reach for, and the two-way interop with signals via `toSignal` and `toObservable`. Marble diagrams for `debounceTime`, `switchMap`, and `exhaustMap`. Builds a search-as-you-type pipeline. Ends with a clear "signals for state, RxJS for streams" rule.
 
-**Chapter 12 — Forms: capturing user input reliably.** Reactive forms over template-driven. `FormControl`, `FormGroup`, `FormArray`, `FormBuilder.nonNullable`, typed forms, built-in and custom validators, async validators, `valueChanges`, and cross-field validation. Rebuilds Compass's "add task" input and adds an edit form with title, due date, and a dynamic list of tags.
+**Chapter 12 — Forms: capturing user input reliably.** Reactive forms over template-driven. `FormControl`, `FormGroup`, `FormArray`, `FormBuilder.nonNullable`, typed forms, built-in and custom validators, async validators, `valueChanges`, cross-field validation. Rebuilds "Add task," adds an edit form with title/due-date/tags using `effect()` to wait for required signal inputs.
 
 ### Part IV — Building a real app
 
-**Chapter 13 — Routing: pages, params, guards, lazy loading.** Route definitions, `<router-outlet>`, `routerLink`, `routerLinkActive`, dynamic route parameters via `withComponentInputBinding()`, query parameters, guards (`canActivate` / `canMatch` / `canDeactivate`), resolvers, lazy loading with `loadComponent`, and preloading strategies. Compass becomes a multi-page app with home, stats, and per-task detail routes.
+**Chapter 13 — Routing: pages, params, guards, lazy loading.** Route definitions, `<router-outlet>`, `routerLink`, `routerLinkActive`, dynamic route parameters via `withComponentInputBinding()`, query parameters, guards (`canActivate` / `canMatch` / `canDeactivate`), resolvers (with proper `ResolveFn` imports), lazy loading with `loadComponent`, preloading. Compass becomes multi-page.
 
-**Chapter 14 — State beyond one component.** The Store-per-concern pattern (private writable signal, readonly public view, methods that describe intent), cross-store reactivity via `effect`, a `persistedSignal` utility for `localStorage`, an offline-mutation queue, and a survey of when NgRx SignalStore vs classic NgRx is worth adopting.
+**Chapter 14 — State beyond one component.** The Store-per-concern pattern, cross-store reactivity via `effect`, a `persistedSignal` utility for `localStorage`, an offline mutation-queue sketch, and a survey of when NgRx SignalStore (`withEntities` from `@ngrx/signals/entities`) or classic NgRx is worth adopting.
 
-**Chapter 15 — Directives, pipes, and reusable UI.** Custom pipes (`TimeAgo`, `Truncate`), attribute directives (`Autofocus`, `LongPress`), a comparison of directive-vs-pipe-vs-component decision criteria, `HostBinding`/`HostListener` and the modern `host` metadata, and a content-projected `EmptyState` component that Compass reuses.
+**Chapter 15 — Directives, pipes, and reusable UI.** Custom pipes (`TimeAgo`, `Truncate`), attribute directives (`Autofocus`, `LongPress`) with clean `DestroyRef` teardown, the directive-vs-pipe-vs-component decision framework, `HostBinding`/`HostListener` and the modern `host` metadata, and a content-projected `EmptyState` component.
 
-**Chapter 16 — Performance: change detection, `OnPush`, `@defer`, bundle analysis.** How to measure with Angular DevTools, browser Performance tab, Lighthouse, and `source-map-explorer`. `OnPush`, signal-driven fine-grained change detection, the roadmap to zoneless. `@defer` blocks with all their triggers. `NgOptimizedImage`. Making `computed` do memoization work for you.
+**Chapter 16 — Performance: change detection, `OnPush`, `@defer`, bundle analysis.** How to measure with Angular DevTools, Lighthouse, and `source-map-explorer`. `OnPush` and signal-driven fine-grained change detection (with a zone vs zoneless diagram). All `@defer` triggers with accurate descriptions (`on viewport`, `on idle`, `on interaction`, `on hover`, `on timer`, `on immediate`, `when`). `NgOptimizedImage` including the `fill` attribute.
 
 ### Part V — Production
 
-**Chapter 17 — Testing.** Unit tests with `TestBed`, replacing services with spies via DI, testing signals (including async effects), testing pipes, `ComponentFixture` for DOM tests, custom **component harnesses** for readable test code, `RouterTestingHarness`, and end-to-end tests with **Playwright**. Includes a priority-ordered checklist of what to actually test.
+**Chapter 17 — Testing.** Unit tests with `TestBed`, replacing services with spies via DI, testing signals (including async effects), testing pipes, `ComponentFixture` for DOM tests, custom **component harnesses** for readable test code, `RouterTestingHarness` (with `withComponentInputBinding` for signal inputs), and end-to-end tests with **Playwright**. Priority-ordered checklist of what to actually test.
 
-**Chapter 18 — Server-side rendering and hydration.** SSR vs SSG vs CSR, `ng add @angular/ssr`, `provideClientHydration()`, transfer state (so the client doesn't re-fetch what the server already had), platform detection with `isPlatformBrowser`, per-route render modes (`Prerender` / `Server` / `Client`), and SEO metadata via `Title` and `Meta`.
+**Chapter 18 — Server-side rendering and hydration.** SSR vs SSG vs CSR, `ng add @angular/ssr`, `provideClientHydration()`, `withHttpTransferCacheOptions` (imported from `@angular/platform-browser`), platform detection with `isPlatformBrowser`, per-route render modes (`Prerender` / `Server` / `Client`), and SEO metadata. Includes an ASCII diagram of the SSR request lifecycle.
 
-**Chapter 19 — Deployment.** The two shapes of a production Angular app (static bundle vs. Node server). Deploying to Netlify, Vercel, Cloudflare Pages, Firebase Hosting, or a container on Fly.io / Cloud Run. Environment configuration via `environment.ts` file replacements. HTTPS, CORS, cookies. A GitHub Actions pipeline that tests, builds, and deploys on every push. Error reporting and analytics.
+**Chapter 19 — Deployment.** The two shapes of a production Angular app (static bundle vs Node server). Deploying to Netlify, Vercel, Cloudflare Pages, Firebase Hosting, or a container on Fly.io / Cloud Run. Environment configuration via `environment.ts` file replacements. HTTPS, CORS, cookies. A GitHub Actions pipeline that tests, builds, and deploys on every push. Modern `web-vitals` imports (`onINP` not `onFID`).
 
-**Chapter 20 — Where to go next.** The Angular ecosystem beyond Compass: Angular Material and CDK, PrimeNG and other UI kits, NgRx, Nx for monorepos, adjacent server frameworks (NestJS, AnalogJS, Astro islands), real-time and offline libraries (SignalR, RxDB), and accessibility tooling. A concrete four-week study plan for the month after finishing the book.
+**Chapter 20 — Where to go next.** The Angular ecosystem beyond Compass: Angular Material and CDK, PrimeNG and other UI kits, NgRx (all flavors), Nx for monorepos, adjacent server frameworks (NestJS, AnalogJS), real-time/offline libraries, and accessibility tooling. A concrete four-week study plan for the month after finishing.
 
 ### Appendices
 
-**Appendix A — Setting up your machine.** Platform-specific installation notes for macOS, Windows, and Linux. Recommended VS Code extensions. A troubleshooting section that covers PATH issues, `EACCES` errors, corporate proxies, port conflicts, and file-watcher failures.
+**Appendix A — Setting up your machine.** Platform-specific install notes for macOS, Windows, Linux. VS Code extension recommendations. Troubleshooting: PATH issues, `EACCES` errors, corporate proxies, port conflicts, file-watcher failures.
 
-**Appendix B — Debugging Angular apps.** The three questions to ask before touching any code. A guided tour of browser DevTools and Angular DevTools. Reading Angular error codes (`NG0100`, `NG0201`, `NG0950`, …) and TypeScript error messages. Common gotchas — missing `()` on signals, cold-Observable double-fetch, stale route params, CORS problems. When and how to ask for help productively.
+**Appendix B — Debugging Angular apps.** The three questions to ask before touching any code. Guided tour of browser DevTools and Angular DevTools. Reading Angular error codes (`NG0100`, `NG0201`, `NG0950`, `NG05104`) and TypeScript error messages. Common gotchas — missing `()` on signals, cold-Observable double-fetch, stale route params, CORS problems.
 
-**Appendix C — Legacy Angular idioms you'll still meet.** Side-by-side old-vs-modern comparisons: NgModules ↔ standalone, constructor DI ↔ `inject()`, `@Input()` ↔ `input()`, `*ngIf`/`*ngFor` ↔ `@if`/`@for`, `RouterModule.forRoot` ↔ `provideRouter`, `@ViewChild` ↔ `viewChild()`, class-based interceptors ↔ `HttpInterceptorFn`, and lifecycle hooks ↔ modern replacements. Includes guidance on when to migrate old code and when to leave it alone.
+**Appendix C — Legacy Angular idioms you'll still meet.** Side-by-side old-vs-modern comparisons: NgModules ↔ standalone, constructor DI ↔ `inject()`, `@Input()` ↔ `input()`, `*ngIf`/`*ngFor` ↔ `@if`/`@for`, `RouterModule.forRoot` ↔ `provideRouter`, `@ViewChild` ↔ `viewChild()`, class-based interceptors ↔ `HttpInterceptorFn`, lifecycle hooks ↔ modern replacements. Correct migration schematic names (`ng generate @angular/core:standalone` and `:control-flow`).
 
-**Appendix D — Resources.** Curated pointers for what to learn next: the official docs and blog, YouTube channels for tutorials (Joshua Morony, Decoded Frontend, Deborah Kurata, ng-conf and other conference channels), weekly newsletters, courses, community forums, and a suggested-next-projects section that outlines how to extend Compass with authentication, offline sync, habit tracking, and drag-and-drop using only the tools the book taught.
+**Appendix D — Resources.** Curated pointers for what to learn next: the official docs (`angular.dev`) and blog (`blog.angular.dev`), YouTube channels for tutorials (Joshua Morony, Decoded Frontend, Deborah Kurata, This Is Angular, Fireship, ng-conf and other conference channels), weekly newsletters, courses (Angular University, Ultimate Courses, Egghead), community forums (Discord, Stack Overflow, GH Discussions), podcasts and conferences, adjacent technology (TypeScript, RxJS, NgRx, Nx, NestJS, MDN), and a suggested-next-projects section for extending Compass.
 
-**Appendix E — Accessibility.** A retrofit guide for the a11y considerations that touch every part of the app you built. Covers semantic HTML (buttons vs clickable divs), the CDK a11y module (`LiveAnnouncer`, `FocusTrap`, `FocusMonitor`), ARIA in Angular templates, keyboard navigation patterns, reactive forms with linked error announcements, route-change announcements for screen readers, and automated a11y auditing with `@axe-core/playwright`.
+**Appendix E — Accessibility.** A retrofit guide for the a11y considerations that touch every part of the app you built. Semantic HTML (buttons vs clickable divs), `@angular/cdk/a11y` (`LiveAnnouncer`, `FocusTrap`, `FocusMonitor`), ARIA in Angular templates via `[attr.aria-*]`, keyboard navigation, reactive forms with `aria-invalid` / `aria-describedby` / `role="alert"`, route-change announcements for screen readers, automated a11y auditing with `@axe-core/playwright`, eight SPA-specific traps.
 
-**Appendix F — Solutions to selected exercises.** Worked solutions to the code exercises across chapters (with the pure reflection exercises deliberately skipped). Read only after attempting the exercise yourself.
+**Appendix F — Solutions to selected exercises.** Worked solutions to the code exercises across Chapters 2, 3, 6, 7, 8, 10, 11, 12, 13, 15, 16, 17, 19. Pure reflection prompts named as "yours to work through" — no answer provided by design.
 
-**Appendix G — Cheat sheet.** A one-page reference for the APIs and syntax you'll reach for most often: signals API, template syntax, new control flow, `@defer` triggers, CLI commands, common RxJS operators, reactive-forms shape, router API, common Angular error codes, and a standalone-component skeleton.
-
-## Reading the PDF
-
-The most recent build is committed at [`build/learn_angular.pdf`](build/learn_angular.pdf). GitHub renders PDFs inline — click the file to read it in your browser without downloading.
-
-If you'd rather have a local copy, either clone the repo or download the raw file directly from GitHub's "Download raw file" button on the PDF's page.
-
-## Building the PDF from source
-
-Requirements:
-
-- Python 3.10 or later
-- WeasyPrint's system dependencies (Pango, Cairo, GDK-PixBuf). On Debian/Ubuntu: `sudo apt install libpango-1.0-0 libpangoft2-1.0-0`. On macOS with Homebrew: `brew install pango`. On Windows, see [WeasyPrint's install docs](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html).
-
-Then:
-
-```bash
-git clone https://github.com/johnny202408/learn-angular.git
-cd learn-angular
-pip install -r requirements.txt
-python3 build.py
-```
-
-The output lands at `build/learn_angular.pdf`.
-
-### Iterating on a single chapter
-
-While drafting or editing, building the whole 313-page book on every save is unnecessary:
-
-```bash
-python3 build.py --chapter 07     # builds just Chapter 7
-python3 build.py --chapter 07 --html  # also emits an HTML preview
-```
-
-The single-chapter PDF lands at `build/learn_angular_ch07.pdf`.
-
-### Regenerating the HTML preview
-
-```bash
-python3 build.py --html
-```
-
-Produces `build/learn_angular.html` — useful for inspecting typography and layout without opening the PDF.
+**Appendix G — Cheat sheet.** A compact reference for the APIs and syntax you'll reach for most often: signals API, template syntax table, new control flow with `@defer` triggers, CLI commands, DI patterns, RxJS operator table, reactive-forms shape, router API, Angular error codes, common patterns (optimistic-update-with-revert, persisted signal, route param as input, search-as-you-type, testing spy), and a standalone-component skeleton.
 
 ## Hebrew edition
 
-A complete Hebrew (RTL) translation of the book is available alongside the English one — **all 20 chapters and 3 appendices**, 327 pages, delivered from the same build pipeline. The English edition remains the primary deliverable; the Hebrew edition is fully independent and self-contained.
+A **complete Hebrew (RTL) translation** of the book is available alongside the English one — all 20 chapters and 7 appendices, 378 pages, delivered from the same build pipeline. The English edition remains the primary deliverable; the Hebrew edition is fully independent and self-contained.
 
-Read it: **[`build/learn_angular_he.pdf`](build/learn_angular_he.pdf)** (327 pages · Hebrew · RTL)
+Read it: **[`build/learn_angular_he.pdf`](build/learn_angular_he.pdf)**
 
 ```bash
 python3 build.py --lang he            # builds build/learn_angular_he.pdf
@@ -206,16 +192,68 @@ python3 build.py --lang he --html     # also emits an HTML preview
 python3 build.py --lang he --chapter 07   # single-chapter Hebrew build for iteration
 ```
 
-Translation conventions applied consistently across all 23 files in `content-he/`:
+Translation conventions applied consistently across all 27 files in `content-he/`:
 
 - **Angular-specific technical nouns are transliterated to Hebrew** (`קומפוננטה`, `סיגנל`, `דירקטיבה`, `פייפ`, `פריימוורק`, `ראוטר`, `באנדל`).
 - **Established Hebrew tech terms are used where they exist** (`הזרקת תלויות` for dependency injection, `תבנית` for template, `שירות` for service, `רינדור בצד השרת` for SSR).
 - **Product names, code identifiers, and CLI commands stay in Latin script** (Angular, TypeScript, Node.js, npm, VS Code, GitHub, Compass, `ng new`, `HttpClient`, `input()`).
 - **Code blocks and inline `code` stay LTR** inside Hebrew prose. `style-he.css` uses `direction: ltr` on `<pre>` and `<code>` so shell commands, TypeScript, and templates render as authored.
 
-The RTL stylesheet is `style-he.css` — the build script picks it automatically when `--lang he` is passed.
+The RTL stylesheet is `style-he.css` — the build script picks it automatically when `--lang he` is passed. It also flips blockquote and code-block accent borders to the right side, moves the running header to top-left (mirror of the English top-right), and sets a Hebrew-friendly font stack (Frank Ruhl Libre → David CLM → Rubik → David → serif fallback).
 
-**Provenance note.** The Hebrew edition is an LLM translation of the original English source. It reads naturally, applies the glossary consistently, and has been sanity-checked in section, but a native Hebrew speaker who also knows Angular is the right next reader before wider distribution. The source is one file per chapter in `content-he/`, so any phrasing correction is a small edit + rebuild.
+**Provenance note.** The Hebrew edition is an LLM translation of the original English source. It reads naturally, applies the glossary consistently, and has been reviewed by an independent LLM Hebrew reviewer with grammar and idiom findings applied. Before wider distribution, a native Hebrew speaker who also knows Angular is the recommended next reader — technical translation catches nuance in both dimensions that no LLM pass fully replicates.
+
+## Reading the PDFs
+
+The two most recent builds are committed at `build/learn_angular.pdf` and `build/learn_angular_he.pdf`. GitHub renders PDFs inline in the file browser — click either file to read it in your browser without downloading.
+
+Both PDFs have **full outline / bookmarks**. Any PDF reader that shows an outline sidebar (Preview, Adobe, Firefox's built-in reader, Chrome's built-in reader, most mobile readers) will let you click straight to any chapter, section, or subsection instead of scrolling ~370 pages.
+
+To download locally, either clone the repo or use GitHub's "Download raw file" button on the PDF's page.
+
+## Building from source
+
+Requirements:
+
+- **Python 3.10 or later**.
+- **WeasyPrint's system dependencies** — Pango, Cairo, GDK-PixBuf.
+  - On Debian/Ubuntu: `sudo apt install libpango-1.0-0 libpangoft2-1.0-0`.
+  - On macOS with Homebrew: `brew install pango`.
+  - On Windows: see [WeasyPrint's install docs](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html).
+
+Then:
+
+```bash
+git clone https://github.com/johnny202408/learn-angular.git
+cd learn-angular
+pip install -r requirements.txt
+python3 build.py                     # English → build/learn_angular.pdf
+python3 build.py --lang he           # Hebrew  → build/learn_angular_he.pdf
+```
+
+### Faster iteration
+
+While drafting or editing, building the whole ~370-page book on every save is unnecessary:
+
+```bash
+python3 build.py --chapter 07              # just Chapter 7 (English)
+python3 build.py --lang he --chapter 07    # just Chapter 7 (Hebrew)
+python3 build.py --chapter 07 --html       # also emit an HTML preview
+```
+
+The single-chapter PDF lands at `build/learn_angular_ch07.pdf` (or `learn_angular_he_ch07.pdf` for the Hebrew variant). The `--html` flag emits `build/learn_angular*.html` — useful for inspecting typography and layout without opening the PDF.
+
+## Iterating on the book
+
+Content lives in Markdown, one file per chapter, ordered by filename prefix (`NN_slug.md`). The build script sorts by prefix and assembles. To reorder chapters, rename files. To add a chapter, drop a new `.md` in `content/` (and `content-he/` if translating) with the next number in sequence.
+
+Styling lives in `style.css` (English, LTR) and `style-he.css` (Hebrew, RTL). Both use identical page geometry (A5, 22mm × 20mm margins) and identical code-block treatment; they differ in text direction, font stack, and border sides.
+
+Common edit-then-rebuild loops:
+
+- **Fix a typo:** open the `.md` file, edit, save, rerun `python3 build.py`.
+- **Change page size or fonts:** edit `style.css` and `style-he.css`, rerun both builds.
+- **Add a new appendix:** create `content/28_appendix_h_*.md` and `content-he/28_appendix_h_*.md`, update the frontmatter to mention it, update the README, rerun.
 
 ## Project structure
 
@@ -225,10 +263,10 @@ learn-angular/
 ├── build.py                        # Markdown → PDF assembler
 ├── requirements.txt                # weasyprint, markdown, pygments, pyyaml
 ├── metadata.yaml                   # title, subtitle, edition
-├── style.css                       # A5 book layout, code highlighting, running headers
-├── style-he.css                    # RTL stylesheet for the Hebrew pilot
-├── content/
-│   ├── 00_frontmatter.md           # Title + preface
+├── style.css                       # A5 book layout (English, LTR)
+├── style-he.css                    # A5 book layout (Hebrew, RTL)
+├── content/                        # English content (27 files)
+│   ├── 00_frontmatter.md           # title + preface + how to read
 │   ├── 01_what_is_angular.md
 │   ├── 02_typescript.md
 │   ├── 03_modern_javascript.md
@@ -256,38 +294,62 @@ learn-angular/
 │   ├── 25_appendix_e_accessibility.md
 │   ├── 26_appendix_f_solutions.md
 │   └── 27_appendix_g_cheatsheet.md
-├── content-he/                     # Hebrew content (complete, 27 files)
-│   ├── 00_frontmatter.md
-│   ├── 01_what_is_angular.md
-│   ├── … (20 chapters)
-│   ├── 21_appendix_a_setup.md
-│   ├── 22_appendix_b_debugging.md
-│   ├── 23_appendix_c_legacy.md
-│   ├── 24_appendix_d_resources.md
-│   ├── 25_appendix_e_accessibility.md
-│   ├── 26_appendix_f_solutions.md
-│   └── 27_appendix_g_cheatsheet.md
+├── content-he/                     # Hebrew content (27 files, same structure)
+│   └── … 00 through 27 in Hebrew
 └── build/
-    ├── learn_angular.pdf           # English (with PDF outline / bookmarks)
-    └── learn_angular_he.pdf        # Hebrew  (with PDF outline / bookmarks)
+    ├── learn_angular.pdf           # English, 369 pages, with PDF outline
+    └── learn_angular_he.pdf        # Hebrew, 378 pages, with PDF outline
 ```
 
-Chapters are ordered by filename prefix; `build.py` sorts them lexically before assembly. To reorder, rename.
+Chapters are ordered by filename prefix. `build.py` sorts them lexically before assembly. There is no separate table-of-contents file — the PDF outline is generated automatically from the heading structure by WeasyPrint (`bookmark-level` / `bookmark-label` on `h1`/`h2`/`h3` in the stylesheets).
 
 ## Design notes
 
-A few decisions worth naming:
+Some deliberate choices worth naming.
 
-- **Signals before RxJS (Chapter 7 before Chapter 11).** Historically Angular books taught observables first because they were the only reactive primitive. With signals as the default in v18+, teaching RxJS first buries a beginner in operators before they've built anything. Signals get them productive; RxJS then arrives as "here's what you reach for when signals aren't enough."
-- **Testing is Chapter 17, not Chapter 3.** Beginners who see `TestBed` before feeling the pain of a component breaking silently don't retain it. The project-driven approach plants "we'll test this properly later" pins throughout, then cashes them in.
-- **Modern-first, legacy in an appendix.** The main text uses `input()`, `inject()`, `@if`, `provideRouter`. Older forms are documented in Appendix C so you can read legacy code without confusion, but they don't clutter the learning path.
-- **A5 page size.** Smaller than typical technical books; two pages fit on a monitor side-by-side, and the printed page is comfortable to hold.
-- **Markdown all the way down.** No LaTeX, no proprietary format. `build.py` is under 100 lines. Anyone with Python and Pango installed can rebuild.
+**Signals before RxJS (Chapter 7 before Chapter 11).** Historically Angular books taught observables first because they were the only reactive primitive. With signals as the default in v18+, teaching RxJS first buries a beginner in operators before they've built anything. Signals get them productive; RxJS then arrives as "here's what you reach for when signals aren't enough."
+
+**Testing is Chapter 17, not Chapter 3.** Beginners who see `TestBed` before they've felt the pain of a component breaking silently don't retain it. The project-driven approach plants "we'll test this properly later" pins throughout, then cashes them in.
+
+**Modern-first, legacy in an appendix.** The main text uses `input()`, `inject()`, `@if`, `provideRouter`, `provideZonelessChangeDetection`. Older forms are documented in Appendix C so you can read legacy code without confusion, but they don't clutter the learning path.
+
+**Accessibility is retrofitted, not integrated.** In an ideal book, every chapter would fold a11y into its topic. In this book, a11y sits in Appendix E, and each chapter's a11y implications are noted in prose (buttons vs clickable divs in Ch 6, focus management in Ch 8's `viewChild` section, route announcements in Ch 13) rather than fully explored. This is a real gap and the appendix is the honest acknowledgement of it — for the next revision, integrating a11y throughout is on the list.
+
+**A5 page size.** Smaller than typical technical books; two pages fit on a monitor side-by-side, and the printed page is comfortable to hold.
+
+**ASCII diagrams over SVG.** The six diagrams in the book are all ASCII inside `pre` blocks. That's uglier than SVG but portable (renders identically in the English and Hebrew editions since code blocks stay LTR in both), editable (no graphics program needed), and predictable across paginated layouts.
+
+**Markdown all the way down.** No LaTeX, no proprietary format. `build.py` is under 100 lines. Anyone with Python and Pango installed can rebuild.
+
+## Review history
+
+The book has been through a **multi-agent LLM review-and-fix cycle**:
+
+- **9 independent LLM reviewers** ran in parallel — 4 tech-accuracy reviewers (one per book part), 1 internal-consistency reviewer (cross-chapter drift, forward-reference verification, `Task` interface consistency), 2 code-sample correctness reviewers (mental compilation of every `ts`/`html`/`css`/`bash` block in the code-heavy chapters), 2 Hebrew language reviewers (grammar, gender agreement, glossary drift, anglicism catches).
+- **~50 unique defects** identified after deduplication. Cross-agent-confirmed findings (caught by 2+ reviewers) were prioritized.
+- **Three fix commits** applied the findings: (1) English mechanical fixes — renamed APIs, wrong error codes, missing imports, `EditTask` constructor bug, `LongPress` teardown leak, wrong `@defer` trigger descriptions; (2) Hebrew grammar/typo/anglicism pass; (3) preface honesty rewrite + new Appendix D (resources).
+- **Enhancement pass** added the PDF outline, six diagrams, and Appendices E–G.
+
+The one review dimension **not** covered here: a **native Hebrew speaker who is also an Angular developer**. That remains the highest-leverage remaining review — subtle idiom preferences and register issues are the kind of thing an LLM Hebrew reviewer flags less reliably than a human. If you know one, the Hebrew edition is at a good point to hand off.
+
+## What the book deliberately doesn't build
+
+Compass is honest about its scope. The following features are named in the book as **excellent next projects** (Appendix D has a full section on how to build them with the tools the book taught):
+
+- **Authentication.** Wire Compass to Firebase Auth, Auth0, or a small NestJS backend with JWT. Add the `requireAuth` guard from Chapter 13 in earnest.
+- **Habit tracking.** Build the `HabitStore` sketched in Chapter 9's exercises. Give habits a `frequency` field, per-habit history, and a `streakDays` computed signal.
+- **Offline sync.** Wire up the `MutationQueue` sketch from Chapter 14. Buffer mutations to `localStorage` when offline; drain them (with proper ordering and revert-on-failure) when the browser comes back.
+- **Drag-and-drop between buckets.** Use `@angular/cdk/drag-drop` to move tasks between "today," "this week," and "later" columns.
+- **A real chart on the stats page.** Compass's stats page ends the book as a stub. Wire it up to Chart.js or D3 (lazy-loaded via `@defer`).
+
+Each is a self-contained project that fits in a weekend or two, uses only the tools the book taught, and produces something you can show.
 
 ## Contributing and feedback
 
-The book is written for personal use, but if you spot errors, unclear passages, or code samples that no longer work with the current Angular version, please open an issue. Pull requests welcome for typos and clarifications.
+Written for personal use, but if you spot errors, unclear passages, or code samples that no longer work with the current Angular version, please open an issue. Pull requests welcome for typos and clarifications.
+
+If you have subject-matter expertise — Angular framework internals, RxJS depths, native Hebrew fluency — a review comment on any specific chapter would be genuinely useful. The book has been reviewed by LLMs; it hasn't been reviewed by a human expert.
 
 ## License
 
-The source and PDF are shared publicly for individual learning use. If you'd like to teach from it, translate it, or redistribute it, please open an issue first.
+The source and PDFs are shared publicly for individual learning use. If you'd like to teach from it, translate it into additional languages, or redistribute it, please open an issue first.
