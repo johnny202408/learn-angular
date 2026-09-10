@@ -186,21 +186,28 @@ python3 build.py --html
 
 Produces `build/learn_angular.html` — useful for inspecting typography and layout without opening the PDF.
 
-## Hebrew edition (pilot)
+## Hebrew edition
 
-A Hebrew (RTL) variant of the book is available as an **early pilot** — front matter and Chapter 1 only. It exists to prove out the toolchain (RTL layout, mixed-direction text, code blocks staying LTR inside Hebrew prose) and to establish glossary conventions. The English edition remains the primary, complete deliverable.
+A complete Hebrew (RTL) translation of the book is available alongside the English one — **all 20 chapters and 3 appendices**, 327 pages, delivered from the same build pipeline. The English edition remains the primary deliverable; the Hebrew edition is fully independent and self-contained.
+
+Read it: **[`build/learn_angular_he.pdf`](build/learn_angular_he.pdf)** (327 pages · Hebrew · RTL)
 
 ```bash
 python3 build.py --lang he            # builds build/learn_angular_he.pdf
 python3 build.py --lang he --html     # also emits an HTML preview
+python3 build.py --lang he --chapter 07   # single-chapter Hebrew build for iteration
 ```
 
-- Hebrew content lives in `content-he/`. Adding more chapters is a matter of translating and dropping files with matching `NN_slug.md` names.
-- The RTL stylesheet is `style-he.css` — the build script picks it automatically when `--lang he` is passed.
-- Code blocks, inline `code`, and technical identifiers stay left-to-right even inside Hebrew paragraphs; product names (Angular, TypeScript, Node.js, Compass) stay in Latin script.
-- Angular-specific technical nouns are transliterated to Hebrew (`קומפוננטה`, `סיגנל`, `דירקטיבה`, `פייפ`); pedagogical prose uses natural Hebrew; established terms with strong Hebrew equivalents (`הזרקת תלויות` for dependency injection, `תבנית` for template, `שירות` for service) use the Hebrew form.
+Translation conventions applied consistently across all 23 files in `content-he/`:
 
-**The Hebrew pilot is an LLM-generated first pass.** It reads naturally and applies the glossary consistently, but before wider distribution it needs a review by a native Hebrew speaker who is also familiar with Angular — technical translation catches nuance in both dimensions and no unreviewed machine translation is publication-grade.
+- **Angular-specific technical nouns are transliterated to Hebrew** (`קומפוננטה`, `סיגנל`, `דירקטיבה`, `פייפ`, `פריימוורק`, `ראוטר`, `באנדל`).
+- **Established Hebrew tech terms are used where they exist** (`הזרקת תלויות` for dependency injection, `תבנית` for template, `שירות` for service, `רינדור בצד השרת` for SSR).
+- **Product names, code identifiers, and CLI commands stay in Latin script** (Angular, TypeScript, Node.js, npm, VS Code, GitHub, Compass, `ng new`, `HttpClient`, `input()`).
+- **Code blocks and inline `code` stay LTR** inside Hebrew prose. `style-he.css` uses `direction: ltr` on `<pre>` and `<code>` so shell commands, TypeScript, and templates render as authored.
+
+The RTL stylesheet is `style-he.css` — the build script picks it automatically when `--lang he` is passed.
+
+**Provenance note.** The Hebrew edition is an LLM translation of the original English source. It reads naturally, applies the glossary consistently, and has been sanity-checked in section, but a native Hebrew speaker who also knows Angular is the right next reader before wider distribution. The source is one file per chapter in `content-he/`, so any phrasing correction is a small edit + rebuild.
 
 ## Project structure
 
@@ -237,12 +244,16 @@ learn-angular/
 │   ├── 21_appendix_a_setup.md
 │   ├── 22_appendix_b_debugging.md
 │   └── 23_appendix_c_legacy.md
-├── content-he/                     # Hebrew pilot content (front matter + Chapter 1)
+├── content-he/                     # Hebrew content (complete, 23 files)
 │   ├── 00_frontmatter.md
-│   └── 01_what_is_angular.md
+│   ├── 01_what_is_angular.md
+│   ├── … (20 chapters)
+│   ├── 21_appendix_a_setup.md
+│   ├── 22_appendix_b_debugging.md
+│   └── 23_appendix_c_legacy.md
 └── build/
     ├── learn_angular.pdf           # the latest English build (313 pp)
-    └── learn_angular_he.pdf        # the latest Hebrew pilot build (~18 pp)
+    └── learn_angular_he.pdf        # the latest Hebrew build (327 pp)
 ```
 
 Chapters are ordered by filename prefix; `build.py` sorts them lexically before assembly. To reorder, rename.
