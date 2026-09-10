@@ -344,6 +344,108 @@ Compass is honest about its scope. The following features are named in the book 
 
 Each is a self-contained project that fits in a weekend or two, uses only the tools the book taught, and produces something you can show.
 
+## Bonus — the author's Claude Code statusline (unrelated to the book)
+
+This book was written entirely inside [Claude Code](https://docs.claude.com/en/docs/claude-code), and along the way the author's terminal statusline grew a small feature that turned out handy enough to share: a `🟢:PORT` segment that appears when a dev server is listening on one of the common ports, and disappears when nothing is up.
+
+**Idle (no dev servers) — quiet:**
+
+```
+user@host:~/dev/py106 | Sonnet 4.6 | ctx: 42% | main | IL: +26°C | 19:57:22
+```
+
+**Server up on :8000 — indicator slides in between `main` and `IL:`:**
+
+```
+user@host:~/dev/py106 | Sonnet 4.6 | ctx: 42% | main | 🟢:8000 | IL: +26°C | 19:55:59
+```
+
+The segment stays silent when nothing is listening — no clutter in the common case. When any of the checked ports has a listener, they show up as `🟢:PORT` (multiple if several are up at once).
+
+Save as `~/.claude/statusline.sh` and `chmod +x`:
+
+```bash
+#!/usr/bin/env bash
+# Claude Code status line: user@host:dir | model | context% | git branch | dev servers | weather IL | time
+
+input=$(cat)
+
+# Identity: user@host:dir (from PS1 style)
+identity="$(whoami)@$(hostname -s):$(pwd)"
+
+# Model display name
+model=$(echo "$input" | jq -r '.model.display_name // empty' 2>/dev/null)
+
+# Context used percentage
+used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty' 2>/dev/null)
+
+# Git branch (skip optional locks)
+branch=$(git -c core.hooksPath=/dev/null branch --show-current 2>/dev/null)
+
+# Dev servers: check common ports; silent when nothing is listening.
+# Ports checked: 3000 (Node/json-server), 4200 (Angular), 5173 (Vite),
+#                8000 (Django/FastAPI/uvicorn), 8080 (many).
+# Override with STATUSLINE_PORTS env var, e.g. STATUSLINE_PORTS="8000 9000".
+servers=""
+ports=${STATUSLINE_PORTS:-"3000 4200 5173 8000 8080"}
+for port in $ports; do
+  if lsof -i :"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+    servers="${servers}${servers:+ }🟢:$port"
+  fi
+done
+
+# Weather in Israel (Celsius), cached for 10 minutes to avoid slowing the prompt
+weather_cache="/tmp/.claude_weather_il.cache"
+weather=""
+if [ -f "$weather_cache" ]; then
+  cache_age=$(( $(date +%s) - $(stat -c %Y "$weather_cache" 2>/dev/null || echo 0) ))
+else
+  cache_age=99999
+fi
+if [ "$cache_age" -gt 600 ]; then
+  fetched=$(curl -s --max-time 4 "wttr.in/Israel?format=%t&m" 2>/dev/null | tr -d '\n')
+  if [ -n "$fetched" ]; then
+    echo "$fetched" > "$weather_cache"
+    weather="$fetched"
+  fi
+else
+  weather=$(cat "$weather_cache" 2>/dev/null)
+fi
+
+now=$(date +"%H:%M:%S")
+
+parts=()
+parts+=("$identity")
+[ -n "$model" ] && parts+=("$model")
+[ -n "$used_pct" ] && parts+=("ctx: $(printf '%.0f' "$used_pct")%")
+[ -n "$branch" ] && parts+=("$branch")
+[ -n "$servers" ] && parts+=("$servers")
+[ -n "$weather" ] && parts+=("IL: $weather")
+parts+=("$now")
+
+printf '%s' "${parts[0]}"
+for part in "${parts[@]:1}"; do
+  printf ' | %s' "$part"
+done
+printf '\n'
+```
+
+Then reference it from `~/.claude/settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "refreshInterval": 5
+  }
+}
+```
+
+`refreshInterval: 5` re-runs the command every 5 seconds, so the port indicator flips within seconds of starting or stopping a server. Override the ports checked with `export STATUSLINE_PORTS="8000 9000"` in your shell rc — defaults are 3000, 4200, 5173, 8000, 8080. Change `wttr.in/Israel` to your location, or delete the weather segment entirely — it's the only piece that costs network I/O.
+
+Requirements: `lsof` (universal on macOS/Linux), `jq` (for pulling model and context info from Claude Code's JSON input), and `curl` (for the weather segment; drop it if you skip weather). The port check is ~1 ms per call, so even five ports at 5-second intervals adds no perceptible latency.
+
 ## Contributing and feedback
 
 Written for personal use, but if you spot errors, unclear passages, or code samples that no longer work with the current Angular version, please open an issue. Pull requests welcome for typos and clarifications.
