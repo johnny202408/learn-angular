@@ -232,6 +232,21 @@ private apiUrl = inject(API_BASE_URL);
 
 ה-injectors של Angular מרכיבים עץ שעוקב אחר עץ הקומפוננטות. כשאתה `inject(X)` בקומפוננטה, Angular הולכת *למעלה* מה-injector של הקומפוננטה הזאת ומחפשת provider ל-`X`. היא משתמשת בראשון שהיא מוצאת.
 
+```
+       Root injector           ← providedIn: 'root'
+             ↑                    (TaskStore lives here)
+             │
+      Environment injector      ← route-scoped providers, if any
+             ↑
+             │
+      Component injector A      ← providers: [SomeState] on <parent>
+             ↑
+             │
+      Component injector B      ← current component asks: inject(TaskStore)
+```
+
+Angular הולכת למעלה מ-B → A → environment → root. בשורש היא מוצאת את `TaskStore` ומחזירה את המופע המשותף. אם `SomeState` היה נפתר במקום, ההליכה הייתה עוצרת ב-A. אם לאף אחד לאורך השרשרת לא היה provider, Angular זורקת `NG0201 — No provider for TaskStore`.
+
 זו הסיבה ש-`providers: [EditorState]` ברמת הקומפוננטה נותן לכל צאצא מופע משותף, בעוד שאותו קוד במערך `providers` של קומפוננטה אחות נותן לאחות מופע שונה. החיפוש מוצא את ה-provider הקרוב ביותר.
 
 לעתים רחוקות תחשוב על זה במפורש. זה חשוב כש:

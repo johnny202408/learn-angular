@@ -34,7 +34,7 @@ The book has five parts and a set of appendices.
 
 **Part V — Production.** Testing, server-side rendering, deployment, and the ecosystem you are joining. When you finish Part V you will have a Compass instance on the internet, and you will know what to search for next.
 
-**Appendices.** A machine setup guide, a debugging checklist, a short tour of older Angular idioms you will encounter in existing codebases, and a curated list of resources — YouTube channels, blogs, courses, and communities — for continuing your Angular education after the book. Read them when you need them; they are reference material, not sequential.
+**Appendices.** A machine setup guide (A), a debugging checklist (B), a short tour of older Angular idioms you will encounter in existing codebases (C), a curated list of resources for continuing your Angular education (D), an accessibility guide that retrofits the a11y considerations the main text keeps deferring (E), solutions to the code exercises (F), and a one-page cheat sheet for signals, template syntax, RxJS, and error codes (G). Read them when you need them; they are reference material, not sequential.
 
 ### How to read this book
 

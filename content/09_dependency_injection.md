@@ -232,6 +232,21 @@ You will see `InjectionToken` in Angular's own code and in libraries. In applica
 
 Angular's injectors form a tree that follows the component tree. When you `inject(X)` in a component, Angular walks *up* from that component's injector looking for a provider for `X`. It uses the first one it finds.
 
+```
+       Root injector           ← providedIn: 'root'
+             ↑                    (TaskStore lives here)
+             │
+      Environment injector      ← route-scoped providers, if any
+             ↑
+             │
+      Component injector A      ← providers: [SomeState] on <parent>
+             ↑
+             │
+      Component injector B      ← current component asks: inject(TaskStore)
+```
+
+Angular walks up from B → A → environment → root. At the root it finds `TaskStore` and returns the shared instance. If `SomeState` were being resolved instead, the walk would stop at A. If nothing along the chain had a provider, Angular throws `NG0201 — No provider for TaskStore`.
+
 That is why component-level `providers: [EditorState]` gives every descendant a shared instance, while the same code in a sibling component's `providers` array gives that sibling a different instance. The lookup finds the nearest provider.
 
 You will rarely think about this explicitly. It matters when:

@@ -16,6 +16,26 @@ We are going to break it up:
 - **`AddTaskForm`** — renders the input and Add button. It emits an event when the user submits a new title.
 - **`TaskList`** — owns the tasks array and coordinates the two. It becomes short and readable.
 
+Here's where Compass will end up, structurally, after this and the next few chapters:
+
+```
+App (root)
+├── <header> nav bar with links
+├── <router-outlet>
+│    │
+│    ├── Home           ← / route
+│    │    └── TaskList
+│    │         ├── AddTaskForm         ← draft input, "Add" button
+│    │         └── TaskRow × N         ← one per task
+│    │
+│    ├── Stats          ← /stats route
+│    │
+│    └── TaskDetail     ← /task/:id route
+│         └── EditTask               ← form for title, due date, tags
+```
+
+Each box is a component. Solid arrows are *contains* relationships (the parent renders the child in its template). Every component is standalone; every one has its own file. This is the shape of an Angular app.
+
 This "container / presentation" division is the most common way to structure Angular components. The container knows about state and orchestrates the parts; the presentational components know only about what they render and what events they emit. Presentational components tend to be small, pure, easy to test, and easy to reuse.
 
 ## Passing data down: `input()`

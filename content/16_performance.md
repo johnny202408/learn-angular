@@ -55,6 +55,22 @@ Best practice: **set `OnPush` on every component**. In a signal-driven codebase,
 
 Modern Angular can run without Zone.js entirely. Change detection triggers only from signal changes and from a few Angular-managed sources. Every `setTimeout` or `Promise.resolve()` no longer schedules a re-check.
 
+Side-by-side:
+
+```
+Zone-based (legacy default):
+   [click]  →  [Zone.js catches]  →  [check every binding in every component]
+   [Promise.resolve]              →  [check every binding in every component]
+   [setTimeout callback]          →  [check every binding in every component]
+
+Signal-driven (zoneless):
+   [signal.set(x)]  →  [notify readers of that signal]  →  [check only affected components]
+   [Promise.resolve]              →  (nothing — Angular doesn't know)
+   [setTimeout callback]          →  (nothing — Angular doesn't know)
+```
+
+Zoneless is faster and more predictable, but it means every state mutation must go through a signal (or an Observable + `async` pipe). Code that used to "just work" by side-effect no longer does.
+
 Enabling it is one line in `app.config.ts`:
 
 ```ts

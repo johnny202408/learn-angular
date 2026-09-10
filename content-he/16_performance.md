@@ -55,6 +55,22 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 Angular מודרנית יכולה לרוץ בלי Zone.js לגמרי. זיהוי שינויים מופעל רק משינויי סיגנל וממספר מקורות מנוהלי-Angular. כל `setTimeout` או `Promise.resolve()` כבר לא מתזמנים בדיקה מחדש.
 
+זה לצד זה:
+
+```
+Zone-based (legacy default):
+   [click]  →  [Zone.js catches]  →  [check every binding in every component]
+   [Promise.resolve]              →  [check every binding in every component]
+   [setTimeout callback]          →  [check every binding in every component]
+
+Signal-driven (zoneless):
+   [signal.set(x)]  →  [notify readers of that signal]  →  [check only affected components]
+   [Promise.resolve]              →  (nothing — Angular doesn't know)
+   [setTimeout callback]          →  (nothing — Angular doesn't know)
+```
+
+Zoneless מהיר יותר וצפוי יותר, אבל זה אומר שכל שינוי מצב חייב לעבור דרך סיגנל (או Observable + פייפ `async`). קוד שרגיל "פשוט לעבוד" באמצעות תופעות לוואי כבר לא עובד.
+
 הפעלתו היא שורה אחת ב-`app.config.ts`:
 
 ```ts

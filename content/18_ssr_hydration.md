@@ -55,6 +55,33 @@ Open `http://localhost:4000` (the default SSR port). View the source of the page
 
 Once Angular boots on the client, it needs to *hydrate* the existing DOM instead of throwing it away and re-rendering. `provideClientHydration()` (added by the schematic) handles this. It matches the server-rendered nodes with the client-rendered component tree, attaches event listeners, and preserves any DOM state (like an input's value) that was already there.
 
+The full request lifecycle:
+
+```
+1. Browser                Server
+       │                     │
+       │  GET /task/t1       │
+       │ ──────────────────► │
+       │                     │  Angular runs on the server,
+       │                     │  renders the full page,
+       │                     │  serializes state into <script> tags
+       │  HTML + JS bundle   │
+       │ ◄────────────────── │
+       │                     │
+       │  (user sees content immediately)
+       │
+       │  JS bundle downloads and executes
+       │
+       │  Angular boots on the client
+       │
+       │  Hydration: attach handlers to existing DOM
+       │  (rather than re-creating it)
+       │
+       │  App is now fully interactive
+```
+
+The gap between "user sees content" and "app is fully interactive" is where SSR earns its keep — on a slow network, that gap can be several seconds, and having something to read during it matters.
+
 Rules of the road:
 
 - **Server and client must produce the same HTML.** Random content (`Math.random()`, `new Date()`) will differ, and hydration will warn about the mismatch. Wrap non-deterministic content in `@if (isBrowser())` (see below) so it renders only on the client.

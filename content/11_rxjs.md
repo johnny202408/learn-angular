@@ -94,13 +94,42 @@ There are dozens of operators. You will use maybe fifteen of them regularly. Her
 
 **`debounceTime(ms)`** waits `ms` after the last emission before passing it through. Perfect for search-as-you-type: the user pauses, the request goes.
 
+```
+source:     --a-b-c------d----|
+              debounceTime(200)
+                    ↓
+output:     -------c------d--|
+                    (a and b dropped — c is the last within the 200ms window)
+```
+
 **`distinctUntilChanged()`** suppresses consecutive duplicate values. Also very useful for search: don't refetch if the query hasn't actually changed.
 
 **`switchMap(fn)`** flattens the source through an inner Observable, cancelling any in-flight inner Observable when a new one arrives. This is the operator that makes search-as-you-type work: each keystroke triggers a new HTTP request, and the previous request is cancelled.
 
+```
+source:     --a-------b------c---------|
+switchMap(x => http.get(x))
+inner a:      --A1--A2--X     (cancelled when b arrives)
+inner b:            --B1--X   (cancelled when c arrives)
+inner c:                  --C1--C2--C3--|
+output:     ----A1-A2----B1--------C1--C2--C3--|
+```
+
+`X` marks where an inner stream was cancelled. Only the *latest* inner stream survives to complete.
+
 **`mergeMap(fn)`** flattens, but lets all inner Observables run concurrently. Rarely what you want for user-driven work; useful when you want parallel processing.
 
 **`exhaustMap(fn)`** flattens, but ignores new source emissions while an inner Observable is still running. The right operator for "save" buttons: if the user clicks twice, don't fire two saves.
+
+```
+source:     --a---b---c----d---------|
+              (b and c ignored — a's inner still running)
+inner a:      -----A1--A2--|
+inner d:                     -----D1--|
+output:     -------A1--A2--------D1--|
+```
+
+Compare with `switchMap` above: `switchMap` cancels the in-flight inner and takes the new source event; `exhaustMap` keeps the in-flight inner and drops the new source event.
 
 **`concatMap(fn)`** flattens, queueing inner Observables so they run one after another. Useful for ordered writes.
 

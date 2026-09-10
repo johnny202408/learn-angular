@@ -145,6 +145,12 @@ Compass is deliberately small enough to hold in your head and rich enough to jus
 
 **Appendix D — Resources.** Curated pointers for what to learn next: the official docs and blog, YouTube channels for tutorials (Joshua Morony, Decoded Frontend, Deborah Kurata, ng-conf and other conference channels), weekly newsletters, courses, community forums, and a suggested-next-projects section that outlines how to extend Compass with authentication, offline sync, habit tracking, and drag-and-drop using only the tools the book taught.
 
+**Appendix E — Accessibility.** A retrofit guide for the a11y considerations that touch every part of the app you built. Covers semantic HTML (buttons vs clickable divs), the CDK a11y module (`LiveAnnouncer`, `FocusTrap`, `FocusMonitor`), ARIA in Angular templates, keyboard navigation patterns, reactive forms with linked error announcements, route-change announcements for screen readers, and automated a11y auditing with `@axe-core/playwright`.
+
+**Appendix F — Solutions to selected exercises.** Worked solutions to the code exercises across chapters (with the pure reflection exercises deliberately skipped). Read only after attempting the exercise yourself.
+
+**Appendix G — Cheat sheet.** A one-page reference for the APIs and syntax you'll reach for most often: signals API, template syntax, new control flow, `@defer` triggers, CLI commands, common RxJS operators, reactive-forms shape, router API, common Angular error codes, and a standalone-component skeleton.
+
 ## Reading the PDF
 
 The most recent build is committed at [`build/learn_angular.pdf`](build/learn_angular.pdf). GitHub renders PDFs inline — click the file to read it in your browser without downloading.
@@ -246,18 +252,24 @@ learn-angular/
 │   ├── 21_appendix_a_setup.md
 │   ├── 22_appendix_b_debugging.md
 │   ├── 23_appendix_c_legacy.md
-│   └── 24_appendix_d_resources.md
-├── content-he/                     # Hebrew content (complete, 24 files)
+│   ├── 24_appendix_d_resources.md
+│   ├── 25_appendix_e_accessibility.md
+│   ├── 26_appendix_f_solutions.md
+│   └── 27_appendix_g_cheatsheet.md
+├── content-he/                     # Hebrew content (complete, 27 files)
 │   ├── 00_frontmatter.md
 │   ├── 01_what_is_angular.md
 │   ├── … (20 chapters)
 │   ├── 21_appendix_a_setup.md
 │   ├── 22_appendix_b_debugging.md
 │   ├── 23_appendix_c_legacy.md
-│   └── 24_appendix_d_resources.md
+│   ├── 24_appendix_d_resources.md
+│   ├── 25_appendix_e_accessibility.md
+│   ├── 26_appendix_f_solutions.md
+│   └── 27_appendix_g_cheatsheet.md
 └── build/
-    ├── learn_angular.pdf           # the latest English build (323 pp)
-    └── learn_angular_he.pdf        # the latest Hebrew build (336 pp)
+    ├── learn_angular.pdf           # English (with PDF outline / bookmarks)
+    └── learn_angular_he.pdf        # Hebrew  (with PDF outline / bookmarks)
 ```
 
 Chapters are ordered by filename prefix; `build.py` sorts them lexically before assembly. To reorder, rename.

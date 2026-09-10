@@ -55,6 +55,33 @@ npm run serve:ssr:compass  # מריץ את השרת שנבנה
 
 ברגע ש-Angular מתאתחלת בלקוח, היא צריכה *לבצע hydration* ל-DOM הקיים במקום לזרוק אותו ולרנדר מחדש. `provideClientHydration()` (הוסף על ידי ה-schematic) מטפל בזה. הוא מתאים את הצמתים שרונדרו בשרת עם עץ הקומפוננטות המרונדר בלקוח, מצמיד מאזיני אירועים, ומשמר כל מצב DOM (כמו ערך של input) שכבר היה שם.
 
+מחזור החיים המלא של הבקשה:
+
+```
+1. Browser                Server
+       │                     │
+       │  GET /task/t1       │
+       │ ──────────────────► │
+       │                     │  Angular runs on the server,
+       │                     │  renders the full page,
+       │                     │  serializes state into <script> tags
+       │  HTML + JS bundle   │
+       │ ◄────────────────── │
+       │                     │
+       │  (user sees content immediately)
+       │
+       │  JS bundle downloads and executes
+       │
+       │  Angular boots on the client
+       │
+       │  Hydration: attach handlers to existing DOM
+       │  (rather than re-creating it)
+       │
+       │  App is now fully interactive
+```
+
+הפער בין "המשתמש רואה תוכן" ל"האפליקציה אינטראקטיבית לחלוטין" הוא איפה ש-SSR מרוויח את מקומו — ברשת איטית, הפער הזה יכול להיות מספר שניות, וזה משנה שיש משהו לקרוא במהלכו.
+
 כללי הדרך:
 
 - **השרת והלקוח חייבים לייצר את אותו HTML.** תוכן אקראי (`Math.random()`, `new Date()`) יהיה שונה, ו-hydration יזהיר על אי-ההתאמה. עטוף תוכן לא-דטרמיניסטי ב-`@if (isBrowser())` (ראה למטה) כך שהוא ירנדר רק בלקוח.
